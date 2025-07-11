@@ -32,9 +32,9 @@
         target="_blank"
         rel="noopener noreferrer"
       >
-        <div class="music-score-box" :id="score.fileName" v-html="score.svg"></div>
-        <p v-if="score.nbOccurence" class="score_author">Occurences : {{ score.nbOccurence }}</p>
-        <p v-if="score.satisfaction" class="score_author">Satisfaction : {{ score.satisfaction }}%</p>
+        <div class="music-score-box" :id="score.source" v-html="score.svg"></div>
+        <p v-if="score.number_of_occurrences" class="score_author">Occurences : {{ score.number_of_occurrences }}</p>
+        <p v-if="score.max_match_degree" class="score_author">Satisfaction : {{ Math.floor(score.max_match_degree * 100) }}%</p>
         <h4 v-if="score.title" class="score_title">{{ score.title }}</h4>
       </a>
     </div>
@@ -54,7 +54,7 @@
 <script setup>
 import { useAuthorsStore } from '@/stores/authorsStore';
 import { useVerovioStore } from '@/stores/verovioStore';
-import { getPageN, extractTitleFromMeiXML} from '@/services/dataManagerServices';
+import { getPageN, extractTitleFromMeiXML } from '@/services/dataManagerServices';
 import { fetchMeiFileByFileName } from '@/services/dataBaseQueryServices';
 import { computed, ref, watch } from 'vue';
 
@@ -141,17 +141,27 @@ function LoadPageN() {
   let dataSlice = getPageN(props.data, pageNb.value, nbPerPage.value);
 
   // check if the data is a collection data or a search result
-  const isCollectionData = typeof(dataSlice[0]) === 'string';
-  console.log('dataSlice', dataSlice);
-  dataSlice.forEach((item) => {
-    // use item.source if data is search result, item itself if data is collection score names
-    let fileName = isCollectionData ? item : item.source; 
+  const isCollectionData = typeof dataSlice[0] === 'string';
+  dataSlice.forEach((data) => {
+    var item;
+    var fileName;
+
+    if (isCollectionData) {
+      fileName = data;
+      item = { source: fileName };
+    } else {
+      fileName = data.source;
+      item = data;
+    }
+
     fetchMeiFileByFileName(fileName, authors.selectedAuthorName).then((meiXML) => {
       // extract title
       let title = extractTitleFromMeiXML(meiXML);
+      item['title'] = title;
+
+      paginatedScores.value.push(item);
       // remove title, author and comment that are overlapping each other and are not useful in the preview
       meiXML = meiXML.replace(/<pgHead.*?<\/pgHead>/s, '');
-      paginatedScores.value.push({ fileName: fileName, title: title, svg: '' });
       verovio.ensureTkInitialized().then(() => {
         // parameters for rendering
         // same as in ejs version
@@ -167,17 +177,14 @@ function LoadPageN() {
           scale: zoom,
         };
         verovio.tk.setOptions(options);
-        let index = paginatedScores.value.findIndex((score) => score.fileName === fileName);
+        let index = paginatedScores.value.findIndex((score) => score.source === fileName);
         if (index !== -1) {
           verovio.tk.loadData(meiXML);
           paginatedScores.value[index]['svg'] = verovio.tk.renderToSVG(1);
-          if (isCollectionData) {
-            paginatedScores.value[index]['nbOccurence'] = item["number_of_occurrences"];
-            paginatedScores.value[index]['satisfaction'] = item["max_match_degree"];
-            
+          if (!isCollectionData) { // color the matches
+
           }
         }
-
       });
     });
   });
