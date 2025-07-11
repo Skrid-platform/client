@@ -69,12 +69,12 @@
           </label>
           <br />
           <label id="transpose-lb" class="tooltip-lb">
-            <input id="transpose-cb" type="checkbox" v-model="transposition_cb" />
+            <input id="transpose-cb" type="checkbox" v-model="transposition_cb" :disabled="!pitch_cb"/>
             Autoriser les transpositions
           </label>
           <br />
           <label id="homothety-lb" class="tooltip-lb">
-            <input id="homothety-cb" type="checkbox" v-model="homothety_cb" />
+            <input id="homothety-cb" type="checkbox" v-model="homothety_cb" :disabled="!rhythm_cb"/>
             Autoriser les variations de tempo
           </label>
           <br />
@@ -86,7 +86,7 @@
         <div class="fuzzy-options">
           <label class="tooltip-lb" id="pitch-dist-lb">
             Tolérance de hauteur
-            <input type="number" min="0" value="0" step="0.5" id="pitch-dist-select" class="nb-select" v-model="pitch_dist" />
+            <input type="number" min="0" value="0" step="0.5" id="pitch-dist-select" class="nb-select" v-model="pitch_dist" :disabled="!pitch_cb"/>
             <!-- <span class='tooltiptext'>Permet d'augmenter la tolérance sur la hauteur de note (en tons)</span> -->
           </label>
 
@@ -100,6 +100,7 @@
               id="duration-factor-select"
               class="nb-select-large"
               v-model="duration_factor"
+              :disabled="!rhythm_cb"
             />
             <!-- <span class='tooltiptext'>Permet d'augmenter la tolérance sur la durée des notes (coefficient multiplicateur).</span> -->
           </label>
@@ -114,6 +115,8 @@
               id="duration-gap-select"
               class="nb-select-large"
               v-model="duration_gap"
+              :disabled="!rhythm_cb"
+              
             />
             <!-- <span class='tooltiptext'>Permet de sauter des notes (en durée : 1 pour pleine, 0.5 pour ronde, 0.25 pour croche, ...)</span> -->
           </label>
@@ -150,7 +153,7 @@ import { fetchSearchResults } from '@/services/dataBaseQueryServices';
 import { createNotesQueryParam } from '@/services/dataManagerServices';
 import { useAuthorsStore } from '@/stores/authorsStore.ts';
 
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 defineOptions({
   name: 'SearchParam',
@@ -173,6 +176,25 @@ const pitch_dist = ref(0);
 const duration_factor = ref(1);
 const duration_gap = ref(0);
 const alpha = ref(0);
+
+watch(pitch_cb, (newValue) => {
+  // Enable or disable options that become irrelevant when unchecked.
+  if (!newValue) {
+    transposition_cb.value = false;
+    // maybe this:
+    // pitch_dist.value = 0; // Reset pitch distance to 0 when pitch is unchecked ??
+  }
+});
+
+watch(rhythm_cb, (newValue) => {
+  // Enable or disable options that become irrelevant when unchecked.
+  if (!newValue) {
+    homothety_cb.value = false;
+    // maybe this:
+    // duration_factor.value = 1; // Reset duration factor to 1 when rhythm is unchecked ??
+    // duration_gap.value = 0; // Reset duration gap to 0 when rhythm is unchecked ??
+  }
+});
 
 const toggleAdvancedOption = () => {
   advancedOptionShow.value = !advancedOptionShow.value;
