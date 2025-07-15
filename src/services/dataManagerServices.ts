@@ -1,6 +1,8 @@
 import { durationNote } from "@/constants/index.ts"
-import type { Duration } from "neo4j-driver";
-import { StaveNote } from "vexflow";
+import { nextTick } from "vue";
+
+import type { Match, Note } from "@/types/api.ts"
+
 /**
  * Return the sub-array corresponding to the data from page `pageNb`.
  *
@@ -11,7 +13,6 @@ import { StaveNote } from "vexflow";
  * @return {json[]} data for the page `pageNb`.
  */
 export function getPageN(data: any[], pageNb: number, numberPerPage: number) {
-
     return data.slice((pageNb - 1) * numberPerPage, pageNb * numberPerPage);
 }
 
@@ -23,7 +24,7 @@ export function getPageN(data: any[], pageNb: number, numberPerPage: number) {
  * @param {float} degree - the match degree for a given note
  * @returns {string} a color corresponding best to `degree`
  */
-export function getGradientColor(degree: any): string {
+function getGradientColor(degree: any): string {
     const gray = { r: 100, g: 100, b: 100 };
     const white = { r: 255, g: 255, b: 255 };
     const red = { r: 255, g: 0, b: 0 };
@@ -63,6 +64,25 @@ function interpolateBetweenColors(fromColor: any, toColor: any, percent: number)
 
     return `rgb(${r}, ${g}, ${b})`;
 };
+
+export function colorMatches(matches: Match[]) {
+    // color the matches
+    nextTick().then(() => {
+        for (let match_nb = matches.length - 1; match_nb >= 0; --match_nb) {
+            // Reverse order to get the best color in last 'layer'
+            const notes:Note[] = matches[match_nb].notes;
+            notes.forEach((note) => {
+                const deg = Math.floor(100 * note.note_deg);
+                const id = note.id;
+                const col = getGradientColor(deg / 100);
+                const notehead = document.getElementById(id);
+                if (notehead) {
+                    notehead.setAttribute('fill', col);
+                }
+            });
+        }
+    })
+}
 
 /**
  * Create the `notes` for the python script

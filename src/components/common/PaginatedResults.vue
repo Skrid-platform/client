@@ -54,7 +54,7 @@
 <script setup>
 import { useAuthorsStore } from '@/stores/authorsStore';
 import { useVerovioStore } from '@/stores/verovioStore';
-import { getPageN, extractTitleFromMeiXML } from '@/services/dataManagerServices';
+import { getPageN, extractTitleFromMeiXML, colorMatches } from '@/services/dataManagerServices';
 import { fetchMeiFileByFileName } from '@/services/dataBaseQueryServices';
 import { computed, ref, watch } from 'vue';
 
@@ -181,8 +181,9 @@ function LoadPageN() {
         if (index !== -1) {
           verovio.tk.loadData(meiXML);
           paginatedScores.value[index]['svg'] = verovio.tk.renderToSVG(1);
-          if (!isCollectionData) { // color the matches
-
+          if (!isCollectionData) {
+            // color the matches
+            colorMatches(paginatedScores.value[index].matches)
           }
         }
       });
