@@ -198,6 +198,7 @@ function LoadPageN() {
   padding: 20px;
   width: auto;
   overflow: auto;
+  background-color: white;
 }
 
 .navigation {

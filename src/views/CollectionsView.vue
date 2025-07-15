@@ -6,9 +6,8 @@
     <div class="father_container d-flex flex-row gap-1" id="fatherContainer">
       <!-- MENU LEFT -->
       <div
-        class="card-lg shadow bg-body-tertiary gap-5 position-fixed rounded-end"
         id="collectionMenu"
-        style="width: 18rem; top: 30; left: 0; height: 60vh; z-index: 1"
+        class="card-lg shadow bg-body-tertiary gap-5 position-fixed rounded-end"
       >
         <div class="card-header text-center fs-1 d-flex flex-column">
           <i class="bi bi-people-fill fs-1" style="color: #006485"></i>
@@ -82,6 +81,13 @@ const authorButtonHandler = (author, index) => {
 <style scoped>
 #menuCollection {
   margin-top: 8%;
+}
+
+#collectionMenu {
+  width: 18rem;
+  left: 0px;
+  z-index: 1;
+  padding-bottom: 2rem;
 }
 
 .searchbar-box {
