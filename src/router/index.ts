@@ -37,6 +37,9 @@ const router = createRouter({
       component: SearchInterfaceView
     }
   ],
+  scrollBehavior(to, from, savedPosition) {
+    return { left: 0, top: 0 }
+  }
 })
 
 export default router
