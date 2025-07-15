@@ -23,20 +23,12 @@
     <div class="results-container" id="results-container">
       <h3 v-if="props.loading" class="text-center">Chargement</h3>
       <h3 v-else-if="props.data.length == 0" class="text-center">Aucun résultat</h3>
-      <a
-        v-else
-        v-for="(score, index) in paginatedScores"
-        :key="index"
-        :href="'/result?author=' + authors.selectedAuthorName + '&score_name=' + score.name"
-        class="score-preview"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
+      <div v-else v-for="(score, index) in paginatedScores" :key="index" class="score-preview" @click="openScoreDetail(score)">
         <div class="music-score-box" :id="score.source" v-html="score.svg"></div>
         <p v-if="score.number_of_occurrences" class="score_author">Occurences : {{ score.number_of_occurrences }}</p>
         <p v-if="score.max_match_degree" class="score_author">Satisfaction : {{ Math.floor(score.max_match_degree * 100) }}%</p>
         <h4 v-if="score.title" class="score_title">{{ score.title }}</h4>
-      </a>
+      </div>
     </div>
 
     <div class="navigation" v-if="nbPages > 1">
@@ -48,6 +40,14 @@
         Page suivante
       </button>
     </div>
+
+    <!-- Modal de détail de la partition -->
+    <ScoreDetailModal
+      :is-open="isModalOpen"
+      :score-data="selectedScore"
+      :author-name="authors.selectedAuthorName"
+      @close="closeModal"
+    />
   </div>
 </template>
 
@@ -57,6 +57,7 @@ import { useVerovioStore } from '@/stores/verovioStore';
 import { getPageN, extractTitleFromMeiXML, colorMatches } from '@/services/dataManagerServices';
 import { fetchMeiFileByFileName } from '@/services/dataBaseQueryServices';
 import { computed, ref, watch } from 'vue';
+import ScoreDetailModal from '@/components/modals/ScoreDetailModal.vue';
 
 defineOptions({
   name: 'PaginatedResults',
@@ -78,6 +79,8 @@ const props = defineProps({
 const verovio = useVerovioStore();
 const authors = useAuthorsStore();
 const paginatedScores = ref([]);
+const isModalOpen = ref(false);
+const selectedScore = ref({});
 let nbScores = computed(() => {
   return props.data.length;
 });
@@ -183,13 +186,24 @@ function LoadPageN() {
           paginatedScores.value[index]['svg'] = verovio.tk.renderToSVG(1);
           if (!isCollectionData) {
             // color the matches
-            colorMatches(paginatedScores.value[index].matches)
+            colorMatches(paginatedScores.value[index].matches);
           }
         }
       });
     });
   });
 }
+
+// Gestion de la modal
+const openScoreDetail = (score) => {
+  selectedScore.value = score;
+  isModalOpen.value = true;
+};
+
+const closeModal = () => {
+  isModalOpen.value = false;
+  selectedScore.value = {};
+};
 </script>
 
 <style scoped>
