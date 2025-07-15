@@ -22,7 +22,10 @@
         <!-- Section 3 : Réseaux sociaux (collé à droite) -->
         <div class="col-md-4 text-md-end px-5">
           <h5 class="fw-bold no-wrap">Suivez-nous</h5>
-          <a href="https://github.com/lasercata/SKRIDPlatform" class="text-black me-3">
+          <a href="https://gitlab.inria.fr/skrid" class="text-black me-3">
+            <i class="bi bi-gitlab fs-4"></i>
+          </a>
+          <a href="https://github.com/skrid-platform" class="text-black me-3">
             <i class="bi bi-github fs-4"></i>
           </a>
         </div>
@@ -38,7 +41,7 @@
     </div>
   </footer>
 </template>
-  
+
 <script setup>
 import { RouterLink } from 'vue-router';
 
@@ -46,7 +49,7 @@ defineOptions({
   name: 'FooterComponent',
 });
 </script>
-  
+
 <style scoped>
 .footer {
   padding: 1rem;
