@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-light fixed-top border-bottom shadow">
+  <nav class="navbar navbar-expand-lg navbar-light border-bottom shadow">
     <div class="container-fluid">
       <a class="navbar-brand text-white" href="/">La plateforme SKRID</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
@@ -35,11 +35,8 @@ defineOptions({
 </script>
   
 <style scoped>
-.navbar {
-  padding: 1%;
-}
 .navbar-nav,
-navbar-brand {
+.navbar-brand {
   font-size: 18px;
 }
 </style>

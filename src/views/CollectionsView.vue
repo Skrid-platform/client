@@ -80,14 +80,13 @@ const authorButtonHandler = (author, index) => {
 </script>
 
 <style scoped>
-#menuCollection {
-  margin-top: 8%;
-}
-
 .searchbar-box {
   background-color: white;
   color: black;
-  border-bottom: 0.5px solid aqua;
+  width: 100% !important;
+  justify-content: center;
+  align-items: center;
+  display: flex;
 }
 .selected {
   background-color: #006485;

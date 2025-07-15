@@ -1,8 +1,8 @@
 <template>
   <div class="container-main">
     <!-- Section principale -->
-    <div class="searchbar-box text-center animate__animated animate__fadeInDown">
-      <div class="container mb-5">
+    
+      <div class="project-title">
         <br />
         <h1 class="text-white">SKRID</h1>
         <p></p>
@@ -10,12 +10,9 @@
           >En savoir plus</a
         >
       </div>
-    </div>
     <!-- Section des services -->
     <section id="services" class="services py-5">
       <div class="container">
-        <h2 class="text-lest mb-4 text-center" style="color: #006485">Le projet</h2>
-
         <p class="text-center text-muted mb-5">
           La plateforme Skrid est développée et maintenue par le laboratoire IRISA (site de
           Lannion). Cette plateforme est un prototype d&eacute;di&eacute; &agrave; la mise en oeuvre
@@ -121,35 +118,11 @@ defineOptions({
 </script>
   
 <style scoped>
-.hero {
-  background: white;
-  color: white;
-  padding: 4rem 0;
+.project-title {
   text-align: center;
-}
-
-.services .card {
-  border: none;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s;
-}
-
-.services .card:hover {
-  transform: translateY(-5px);
-}
-
-p {
-  font-size: 14px;
-}
-.searchbar-box {
-  margin-top: 70px;
-  background: linear-gradient(
-    to right,
-    rgba(0, 100, 133, 1),
-    rgba(0, 120, 160, 0.9),
-    rgba(0, 100, 155, 0.8),
-    rgba(0, 100, 133, 0.7)
-  );
-  color: black;
+  color: white;
+  padding-bottom: 20px;
+  background:rgb(0, 100, 150);
+  width: 100%;
 }
 </style>

@@ -88,6 +88,5 @@ export default {
 .searchbar-box {
   background-color: white;
   color: black;
-  border-bottom: 0.5px solid aqua;
 }
 </style>
