@@ -4,7 +4,8 @@ import { ref } from "vue";
 import api from "../services/axios.ts";
 
 /**
- * Class defining methods to record music from the microphone
+ * Class defining methods to record music from the microphone, and display the converted result to
+ * the stave.
  */
 class MicroRecorder {
   /** Store when the user records the melody
@@ -14,11 +15,14 @@ class MicroRecorder {
    */
   is_recording = ref(false);
 
-  /** Flag to stop recording
-   * @type {boolean}
-   * @default false
+  /**
+   * Store the URL of the blob of the last recording.
+   *
+   * @type {ref<string|undefined>}
+   * @default undefined
    */
-  #stop_recording = false;
+  last_url = ref(undefined)
+
   #recorder;
   #stream;
   #chunks;
@@ -29,10 +33,7 @@ class MicroRecorder {
 
   constructor() {
     this.is_recording.value = false;
-    this.#stop_recording = false;
-
     this.#chunks = [];
-
     this.#staveRepr = StaveRepresentation.getInstance()
   }
 
@@ -44,65 +45,60 @@ class MicroRecorder {
     if (MicroRecorder.#instance === null) {
       MicroRecorder.#instance = new MicroRecorder();
     }
+
     return MicroRecorder.#instance;
   }
 
   /**
-   * Starts the recording for the given duration.
-   *
-   * Always wrap in a try / catch block to catch potential microphone access errors.
-   */
-  async startRecording_not_working() {
-    if (this.is_recording.value) return;
-
-    this.is_recording.value = true;
-
-    // An error can arise here, it has to be caught by the caller.
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    this.#stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-
-    const source = audioContext.createMediaStreamSource(this.#stream);
-
-    this.#recorder = new Recorder(source, { numChannels: 1 });
-    this.#recorder.start();
-  }
-
-  /**
-   * Starts the recording for the given duration.
-   *
-   * Always wrap in a try / catch block to catch potential microphone access errors.
-   */
-  async startRecording() {
-    if (this.is_recording.value) return;
-
-    this.is_recording.value = true;
-
-    await this.createRecorder();
-
-    this.#recorder.start();
-  }
-
-  /*
    * Creates the stream and recorder (`this.#recorder`).
    */
   async createRecorder() {
     this.#stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     this.#recorder = new MediaRecorder(this.#stream);
 
+    // When data is available, add it to the chunks
     this.#recorder.ondataavailable = (event) => {
       this.#chunks.push(event.data);
     };
 
+    // When stopping, send blob to the function that make a call to the API and that displays to the
+    // stave then.
     this.#recorder.onstop = () => {
       const blob = new Blob(this.#chunks, { type: 'audio/mp3' });
-      // const url = URL.createObjectURL(blob)
+      this.last_url.value = URL.createObjectURL(blob);
 
       this.addNotesToStave(blob)
 
-      this.#chunks = [];
+      this.#chunks = []; // Reset the array for next recording.
     };
   }
 
+  /**
+   * Starts the recording.
+   *
+   * It also clears the stave before recording.
+   * Does nothing if there is already a recording in progress.
+   * Always wrap in a try / catch block to catch potential microphone access errors.
+   */
+  async startRecording() {
+    if (this.is_recording.value) return;
+    this.is_recording.value = true;
+
+    // Create the recorder
+    await this.createRecorder();
+
+    // Start the recorder
+    this.#recorder.start();
+
+    // Clear the stave
+    this.#staveRepr.clear_all_pattern();
+  }
+
+  /**
+   * Stops the recording.
+   *
+   * Does nothing if there is no recording in progress.
+   */
   stopRecording() {
     if (!this.is_recording.value || !this.#recorder) return;
     this.is_recording.value = false;
@@ -110,7 +106,7 @@ class MicroRecorder {
     this.#recorder.stop();
   }
 
-  /*
+  /**
    * Uses `this.convertAudioToNotes` to get the notes from the blob, and display them onto the
    * stave.
    *

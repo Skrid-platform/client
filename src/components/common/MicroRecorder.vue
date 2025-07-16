@@ -1,17 +1,33 @@
 <template>
   <div class="wrapper">
-    <button id="spinner-bar" class="btn btn-outline-secondary btn-lg rounded-circle" style="width: 6rem; height: 6rem; box-shadow: 0 2px 8px rgba(0,0,0,0.3);" disabled>
+    <button
+      id="recording-circle"
+      class="btn btn-outline-secondary btn-lg rounded-circle"
+      :class="{'spinner-grow': micRecorder.is_recording.value}"
+      disabled
+    >
       <i class="bi bi-mic-fill"></i>
     </button>
-    <!--<div id="music-score"></div>-->
     <hr>
     <!-- Section d'enregistrement audio -->
-    <div id="styleCardRecorder" class="card-body p-1 recorder-container d-flex flex-column text-center">
-      <button @click="toggleRecording()" id="start-rec" class="btn btn text-white" style="background-color: #006485;">Démarrer l'enregistrement</button>
-      <div id="rec-indicator" class="inactive text-secondary" style="margin-top:10px;">Prêt à enregistrer</div>
-      <div id="capture-progress" class="progress-bar" style="width: 0%; height: 10px; background-color: #006485; margin-top:10px; border-radius: 5px;"></div>
-      <div id="load-text-bar" class="text-primary"></div>
-      <a id="download-link" style="display: none; margin-top:10px;">Télécharger l'enregistrement (.wav)</a>
+    <div id="styleCardRecorder" class="card-body recorder-container d-flex flex-column text-center">
+      <button
+        type="button"
+        class="btn btn-info text-white"
+        v-if="micRecorder.is_recording.value"
+        @click="stopRecording()"
+        id="stop_recording"
+      >
+        Arrêter l'enregistrement
+      </button>
+      <button v-else @click="startRecording()" type="button" class="btn btn-info text-white">
+        Démarrer l'enregistrement
+      </button>
+
+      <!-- <div id="rec-indicator" class="inactive text-secondary" style="margin-top:10px;">Prêt à enregistrer</div> -->
+
+      <a v-if="micRecorder.last_url.value" id="download-link" :href="micRecorder.last_url.value"
+        target="_blank" rel="noopener noreferrer">Télécharger l'enregistrement (.mp3)</a>
     </div>
   </div>
 </template>
@@ -20,7 +36,7 @@
 import StaveRepresentation from '@/lib/stave.js';
 import MicroRecorder from '@/lib/mic_recorder.js';
 
-import { ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 defineOptions({
   name: 'MicroRecorder',
@@ -28,21 +44,27 @@ defineOptions({
 
 const micRecorder = MicroRecorder.getInstance();
 
+/**
+ * Start to record
+ */
 function startRecording() {
-  console.log('start recording');
   try {
+    console.log('Starting recording');
     micRecorder.startRecording();
   }
   catch (err) {
     console.error('Microphone access error:', err);
-    // updateRecIndicator(false, "Erreur d'accès au micro"); //TODO: define this
     return;
   }
-  // updateRecIndicator(true, "Enregistrement en cours...");
+
+  console.log('Recording processing...');
 }
 
+/**
+ * Stop recording
+ */
 function stopRecording() {
-  console.log('stop recording');
+  console.log('Stopping recording');
   micRecorder.stopRecording();
 }
 
@@ -67,16 +89,22 @@ function keyListener(event) {
   if (event.repeat) return;
 
   // Toggle recording with space
-  if (event.type == 'keyup' && event.key == 'Space') {
+  if (event.type == 'keydown' && event.key == ' ') {
+    event.preventDefault(); // prevent scrolling
     toggleRecording();
   }
 }
+
+// Init
+onMounted(() => {
+  document.addEventListener('keydown', keyListener);
+  document.addEventListener('keyup', keyListener);
+});
 </script>
 
 <style scoped>
 .wrapper {
   padding: 35px 40px;
-  width: 950px;
   border-radius: 20px;
   /* background: #141414; */
   text-align: center;
@@ -190,7 +218,6 @@ function keyListener(event) {
   visibility: visible;
 }
 
-
 .info-note {
   background: cornsilk;
   border: 1px solid black;
@@ -198,9 +225,32 @@ function keyListener(event) {
   padding: 5px;
   position: absolute;
 }
+
+#recording-circle {
+  width: 6rem;
+  height: 6rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+button {
+  background: #7ab6e0;
+}
+.bt-not-recording {
+  background-color: #006485;
+  color: white;
+}
+#stop_recording {
+  background: red;
+}
+
+#download-link {
+  margin: 10px;
+}
+
 #styleCardRecorder{
   box-shadow: 0 10px 10px rgba(0,0,0,0.1);
   border: none;
   border-radius: 5px;
+  padding: 10px;
 }
 </style>

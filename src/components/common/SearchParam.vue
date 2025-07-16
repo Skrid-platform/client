@@ -116,7 +116,7 @@
               class="nb-select-large"
               v-model="duration_gap"
               :disabled="!rhythm_cb"
-              
+
             />
             <!-- <span class='tooltiptext'>Permet de sauter des notes (en durée : 1 pour pleine, 0.5 pour ronde, 0.25 pour croche, ...)</span> -->
           </label>
@@ -238,7 +238,7 @@ function searchButtonHandler() {
     pitch_distance: pitch_dist.value,
     duration_factor: duration_factor.value,
     duration_gap: duration_gap.value,
-    alpha: alpha.value,
+    alpha: alpha.value / 100, // convert to a value between 0 and 1
     contour_match: false,
   };
 
