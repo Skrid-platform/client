@@ -2,7 +2,8 @@
   <div>
     <div class="search-pattern">
       <stave></stave>
-      <keyboard></keyboard>
+      <!-- <keyboard></keyboard> -->
+      <micro-recorder></micro-recorder>
       <search-param @receiveData="getData" @showPaginatedResult="showPaginatedResults()"></search-param>
     </div>
     <paginated-results :loading="resultsIsLoading" :data="searchResults" v-if="paginatedIsShown"/>
@@ -12,6 +13,7 @@
 <script setup>
 import Stave from '@/components/common/Stave.vue';
 import Keyboard from '@/components/common/Keyboard.vue';
+import MicroRecorder from '@/components/common/MicroRecorder.vue';
 import SearchParam from '@/components/common/SearchParam.vue';
 import PaginatedResults from '@/components/common/PaginatedResults.vue';
 import { ref } from 'vue';
