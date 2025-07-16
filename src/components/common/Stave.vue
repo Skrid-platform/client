@@ -44,14 +44,14 @@ function keyListener(event) {
     staveRepr.remove_last_note();
   }
   //---Play melody
-  // else if (event.key == ' ' && !event.repeat) { // Space is already used for the recording
-  //   event.preventDefault(); // prevent scrolling
-  //   if (player.is_playing.value) {
-  //     player.stopMelody();
-  //   } else {
-  //     player.playMelody(staveRepr.melody);
-  //   }
-  // }
+  else if (event.key == 'p' && !event.repeat) {
+    event.preventDefault(); // prevent scrolling
+    if (player.is_playing.value) {
+      player.stopMelody();
+    } else {
+      player.playMelody(staveRepr.melody);
+    }
+  }
 }
 
 onMounted(() => {

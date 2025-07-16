@@ -81,6 +81,8 @@ class StaveRepresentation {
         this.#stave = new Stave(10, 40, this.#width);
         this.#stave.addClef("treble");
         this.#stave.setContext(this.#context).draw();
+
+        this.resizeStave();
     }
 
     /**
