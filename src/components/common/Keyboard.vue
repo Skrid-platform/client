@@ -252,7 +252,7 @@ const player = Player.getInstance(); // use singleton patron to centrelize the v
 
 const octave = ref(4);
 
-const volume = ref(0.5);
+const volume = ref(player.getVolume());
 watch(volume, (newVolume) => {
   player.setVolume(newVolume);
 });
