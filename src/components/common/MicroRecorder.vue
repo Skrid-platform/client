@@ -3,12 +3,12 @@
     <button
       id="recording-circle"
       class="btn btn-outline-secondary btn-lg rounded-circle"
-      :class="{'spinner-grow': micRecorder.is_recording.value}"
+      :class="{ 'spinner-grow': micRecorder.is_recording.value }"
       disabled
     >
       <i class="bi bi-mic-fill"></i>
     </button>
-    <hr>
+    <hr />
     <!-- Section d'enregistrement audio -->
     <div id="styleCardRecorder" class="card-body recorder-container d-flex flex-column text-center">
       <button
@@ -20,14 +20,18 @@
       >
         Arrêter l'enregistrement
       </button>
-      <button v-else @click="startRecording()" type="button" class="btn btn-info text-white">
-        Démarrer l'enregistrement
-      </button>
+      <button v-else @click="startRecording()" type="button" class="btn btn-info text-white">Démarrer l'enregistrement</button>
 
       <!-- <div id="rec-indicator" class="inactive text-secondary" style="margin-top:10px;">Prêt à enregistrer</div> -->
 
-      <a v-if="micRecorder.last_url.value" id="download-link" :href="micRecorder.last_url.value"
-        target="_blank" rel="noopener noreferrer">Télécharger l'enregistrement (.mp3)</a>
+      <a
+        v-if="micRecorder.last_url.value"
+        id="download-link"
+        :href="micRecorder.last_url.value"
+        target="_blank"
+        rel="noopener noreferrer"
+        >Télécharger l'enregistrement (.mp3)</a
+      >
     </div>
   </div>
 </template>
@@ -51,8 +55,7 @@ function startRecording() {
   try {
     console.log('Starting recording');
     micRecorder.startRecording();
-  }
-  catch (err) {
+  } catch (err) {
     console.error('Microphone access error:', err);
     return;
   }
@@ -74,8 +77,7 @@ function stopRecording() {
 function toggleRecording() {
   if (micRecorder.is_recording.value) {
     stopRecording();
-  }
-  else {
+  } else {
     startRecording();
   }
 }
@@ -139,7 +141,7 @@ onMounted(() => {
 }
 .music-score-box:hover {
   cursor: pointer;
-  box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
   background-color: #dceaf1;
 }
 .music-score-box svg {
@@ -148,7 +150,7 @@ onMounted(() => {
 }
 .score-preview {
   text-decoration: none;
-  color:#000;
+  color: #000;
   padding: 15px;
 }
 .score_title {
@@ -229,7 +231,7 @@ onMounted(() => {
 #recording-circle {
   width: 6rem;
   height: 6rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 button {
@@ -247,8 +249,8 @@ button {
   margin: 10px;
 }
 
-#styleCardRecorder{
-  box-shadow: 0 10px 10px rgba(0,0,0,0.1);
+#styleCardRecorder {
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
   border: none;
   border-radius: 5px;
   padding: 10px;

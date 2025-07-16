@@ -53,14 +53,14 @@
     </div>
   </div>
 </template>
-  
-  <script>
+
+<script>
 export default {
   name: 'ReferencesView',
 };
 </script>
-  
-  <style scoped>
+
+<style scoped>
 .container {
   text-align: center;
 }

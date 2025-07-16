@@ -1,6 +1,6 @@
 import StaveRepresentation from '@/lib/stave.js';
-import { ref } from "vue";
-import api from "../services/axios.ts";
+import { ref } from 'vue';
+import api from '../services/axios.ts';
 
 /**
  * Class defining methods to record music from the microphone, and display the converted result to
@@ -22,7 +22,7 @@ class MicroRecorder {
    * @type {ref<string|undefined>}
    * @default undefined
    */
-  last_url = ref(undefined)
+  last_url = ref(undefined);
 
   #recorder;
   #stream;
@@ -35,7 +35,7 @@ class MicroRecorder {
   constructor() {
     this.is_recording.value = false;
     this.#chunks = [];
-    this.#staveRepr = StaveRepresentation.getInstance()
+    this.#staveRepr = StaveRepresentation.getInstance();
   }
 
   /**
@@ -68,7 +68,7 @@ class MicroRecorder {
       const blob = new Blob(this.#chunks, { type: 'audio/mp3' });
       this.last_url.value = URL.createObjectURL(blob);
 
-      this.addNotesToStave(blob)
+      this.addNotesToStave(blob);
 
       this.#chunks = []; // Reset the array for next recording.
     };
@@ -114,10 +114,10 @@ class MicroRecorder {
    * @param {Blob} blob - the blob containing the recorded audio
    */
   addNotesToStave(blob) {
-    this.convertAudioToNotes(blob).then(notes => {
+    this.convertAudioToNotes(blob).then((notes) => {
       console.log(notes);
 
-      notes.forEach(n => {
+      notes.forEach((n) => {
         let pitch = n[0];
         let dur = n[1];
         let dots = n[2];
@@ -126,7 +126,8 @@ class MicroRecorder {
         pitch_0 = pitch[0];
         pitch_arr = pitch;
 
-        if (dots >= 1) { // Ignore more dots
+        if (dots >= 1) {
+          // Ignore more dots
           dur += 'd';
         }
 
@@ -146,11 +147,12 @@ class MicroRecorder {
     const formData = new FormData();
     formData.append('file', blob, 'audio.mp3');
 
-    return api.post('/convert-recording', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
-      .then(response => response.data)
-      .then(data => data.notes)
-      .then(notes =>  notes)
-      .catch(err => {
+    return api
+      .post('/convert-recording', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
+      .then((response) => response.data)
+      .then((data) => data.notes)
+      .then((notes) => notes)
+      .catch((err) => {
         console.error("Erreur lors de l'envoi du fichier audio :", err);
       });
   }

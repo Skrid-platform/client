@@ -7,21 +7,21 @@
 </template>
 
 <script setup>
-import HeaderComponent from './components/layout/HeaderComponent.vue'
-import FooterComponent from './components/layout/FooterComponent.vue'
+import HeaderComponent from './components/layout/HeaderComponent.vue';
+import FooterComponent from './components/layout/FooterComponent.vue';
 
-import { onMounted } from 'vue'
+import { onMounted } from 'vue';
 
 defineOptions({
-  name: 'App'
+  name: 'App',
 });
 
 onMounted(() => {
   // Calcule la hauteur du navbar
-  const navbarHeight = document.querySelector('.navbar').offsetHeight
+  const navbarHeight = document.querySelector('.navbar').offsetHeight;
   // Applique dynamiquement un padding-top au contenu pour qu'il ne soit pas masqué sous le navbar
-  document.querySelector('.main-content').style.top = `${navbarHeight}px`
-})
+  document.querySelector('.main-content').style.top = `${navbarHeight}px`;
+});
 </script>
 
 <style>

@@ -5,10 +5,7 @@
     </div>
     <div class="father_container d-flex flex-row gap-1" id="fatherContainer">
       <!-- MENU LEFT -->
-      <div
-        id="collectionMenu"
-        class="card-lg shadow bg-body-tertiary gap-5 position-fixed rounded-end"
-      >
+      <div id="collectionMenu" class="card-lg shadow bg-body-tertiary gap-5 position-fixed rounded-end">
         <div class="card-header text-center fs-1 d-flex flex-column">
           <i class="bi bi-people-fill fs-1" style="color: #006485"></i>
           Collections
@@ -111,7 +108,7 @@ const authorButtonHandler = (author, index) => {
   /* background-color: #d0d0d0; */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
-.archives{
+.archives {
   margin-left: 18rem;
   width: 100%;
 }

@@ -1,18 +1,13 @@
 <template>
   <div class="wrapper">
-    <label class='unselected-label' :class="{'selected-label': switchInput.isPianoSelected()}">
-      Piano
+    <label class="unselected-label" :class="{ 'selected-label': switchInput.isPianoSelected() }"> Piano </label>
+
+    <label class="switch">
+      <input type="checkbox" @change="switchInput.toggle" />
+      <span class="slider round"></span>
     </label>
 
-    <label class='switch'>
-      <input type='checkbox' @change='switchInput.toggle'>
-      <span class='slider round'></span>
-    </label>
-
-    <label class='unselected-label' :class="{'selected-label': switchInput.isMicrophoneSelected()}">
-      Microphone
-    </label>
-
+    <label class="unselected-label" :class="{ 'selected-label': switchInput.isMicrophoneSelected() }"> Microphone </label>
   </div>
 </template>
 
@@ -84,19 +79,19 @@ onMounted(() => {
   right: 0;
   bottom: 0;
   background-color: #7ab6e0;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 .slider:before {
   position: absolute;
-  content: "";
+  content: '';
   height: 26px;
   width: 26px;
   left: 4px;
   bottom: 4px;
   background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
 input:checked + .slider {
@@ -104,7 +99,7 @@ input:checked + .slider {
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
+  box-shadow: 0 0 1px #2196f3;
 }
 
 input:checked + .slider:before {
@@ -122,4 +117,3 @@ input:checked + .slider:before {
   border-radius: 50%;
 }
 </style>
-

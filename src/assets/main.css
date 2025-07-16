@@ -1,7 +1,8 @@
 @import './base.css';
 @import url('https://fonts.googleapis.com/css?family=Saira');
 
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
   padding: 0;
@@ -86,17 +87,17 @@ form {
   margin-top: 20px;
 }
 
-form input[type="text"] {
+form input[type='text'] {
   padding: 8px;
   border: none;
   border-radius: 5px;
   width: 400px;
 }
 
-form button[type="submit"] {
+form button[type='submit'] {
   padding: 8px 16px;
   background-color: #fff;
-  color: #20AABD;
+  color: #20aabd;
   border: none;
   border-radius: 5px;
   margin-left: 10px;
@@ -116,7 +117,6 @@ form button[type="submit"] {
 .no-wrap {
   white-space: nowrap;
 }
-
 
 label {
   user-select: none;
@@ -172,6 +172,5 @@ label {
     width: 150px;
     height: auto;
     max-width: 100%;
-
   }
 }

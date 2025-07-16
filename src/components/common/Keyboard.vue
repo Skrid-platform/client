@@ -257,7 +257,7 @@ watch(volume, (newVolume) => {
   player.setVolume(newVolume);
 });
 
-let currently_played_notes = {}; // Object to keep track of currently played notes
+const currently_played_notes = {}; // Object to keep track of currently played notes
 
 let isAzertyMapping = true; // Default keyboard mapping = azerty
 /**
@@ -296,7 +296,7 @@ function toggleKeyboardMapping() {
  * @param {string} [key_id=null] - the html `data-key` field. If null, uses `note_arr` instead.
  */
 function keyUp(note, key_id = null) {
-  let note_arr = note.replace('/', '');
+  const note_arr = note.replace('/', '');
 
   // Set key as unselected in the html
   if (key_id == null || note == 'r') key_id = note_arr;
@@ -329,7 +329,7 @@ function keyUp(note, key_id = null) {
   else delete currently_played_notes[note_arr];
 
   let wait_for_chord = false;
-  for (let notePlayed in currently_played_notes) {
+  for (const notePlayed in currently_played_notes) {
     if ('start' in currently_played_notes[notePlayed])
       // if there is a note that is not stopped, wait of it.
       wait_for_chord = true;
@@ -337,9 +337,9 @@ function keyUp(note, key_id = null) {
 
   if (wait_for_chord) return;
 
-  let keys = [note];
-  for (let notePlayed in currently_played_notes) {
-    let nt = notePlayed.slice(0, -1) + '/' + notePlayed.slice(-1);
+  const keys = [note];
+  for (const notePlayed in currently_played_notes) {
+    const nt = notePlayed.slice(0, -1) + '/' + notePlayed.slice(-1);
     if (!keys.includes(nt)) keys.push(nt);
     delete currently_played_notes[notePlayed];
   }
@@ -403,7 +403,7 @@ function keyListener(event) {
 
   // If the key is not in the mapping, return
   if (key in mapping_azerty) {
-    let note_json = mapping_azerty[key];
+    const note_json = mapping_azerty[key];
     let note = note_json.pitch + '/' + (note_json.octave + octave.value);
     let key_id = note_json.pitch + (note_json.octave + 4);
 
@@ -423,12 +423,12 @@ function keyListener(event) {
 }
 
 onMounted(() => {
-  let pianoKeys = document.querySelectorAll('.piano-keys .key');
+  const pianoKeys = document.querySelectorAll('.piano-keys .key');
   // Adding mouseDown, mouseUp listeners to each piano key
   pianoKeys.forEach((key) => {
     key.addEventListener('mousedown', () => {
-      let oct = parseInt(key.dataset.key.at(-1)) - 4;
-      let key_ = key.dataset.key.slice(0, -1) + (oct + octave.value);
+      const oct = parseInt(key.dataset.key.at(-1)) - 4;
+      const key_ = key.dataset.key.slice(0, -1) + (oct + octave.value);
       keyDown(key_, key.dataset.key);
     });
     key.addEventListener('mouseup', () => {
@@ -438,7 +438,7 @@ onMounted(() => {
       if (key.classList.contains('black')) newkey = key.dataset.key.slice(0, 2) + '/' + key.dataset.key.slice(2);
       else newkey = key.dataset.key.slice(0, 1) + '/' + key.dataset.key.slice(1);
 
-      let oct = parseInt(key.dataset.key.slice(-1)[0]) - 4;
+      const oct = parseInt(key.dataset.key.slice(-1)[0]) - 4;
       newkey = newkey.slice(0, -1) + (oct + octave.value);
 
       keyUp(newkey, key.dataset.key);

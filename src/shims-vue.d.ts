@@ -6,6 +6,6 @@ declare module '*.vue' {
 }
 
 declare module 'verovio' {
-    const verovio: any;
-    export default verovio;
+  const verovio: any;
+  export default verovio;
 }

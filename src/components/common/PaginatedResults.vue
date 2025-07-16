@@ -78,12 +78,12 @@ const props = defineProps({
 const verovio = useVerovioStore();
 const authors = useAuthorsStore();
 const paginatedScores = ref([]);
-let nbScores = computed(() => {
+const nbScores = computed(() => {
   return props.data.length;
 });
-let pageNb = ref(0);
-let nbPerPage = ref(10);
-let nbPages = computed(() => {
+const pageNb = ref(0);
+const nbPerPage = ref(10);
+const nbPages = computed(() => {
   if (!props.data || props.data.length === 0) return 0; // If no data, no pages
   if (nbPerPage.value === nbScores.value) return 1; // If all items are shown, only one page is needed
   return Math.ceil(nbScores.value / nbPerPage.value); // Calculate the number of pages needed
@@ -110,7 +110,7 @@ watch(pageNb, () => {
   // always keep pageNb in range (1 <= pageNb <= nbPages)
   if (pageNb.value < 1) {
     pageNb.value = 1;
-  } else if (pageNb.value > nbPages) {
+  } else if (pageNb.value > nbPages.value) {
     pageNb.value = nbPages;
   }
   if (nbPages.value > 0) {
@@ -130,7 +130,7 @@ watch(
       pageNb.value = 1; // reset to first page
       // LoadPageN() not needed because it will be called by the watcher of pageNb
     }
-  }
+  },
 );
 
 function LoadPageN() {
@@ -138,13 +138,13 @@ function LoadPageN() {
   paginatedScores.value = [];
 
   // slice the data from the page requested
-  let dataSlice = getPageN(props.data, pageNb.value, nbPerPage.value);
+  const dataSlice = getPageN(props.data, pageNb.value, nbPerPage.value);
 
   // check if the data is a collection data or a search result
   const isCollectionData = typeof dataSlice[0] === 'string';
   dataSlice.forEach((data) => {
-    var item;
-    var fileName;
+    let item;
+    let fileName;
 
     if (isCollectionData) {
       fileName = data;
@@ -156,7 +156,7 @@ function LoadPageN() {
 
     fetchMeiFileByFileName(fileName, authors.selectedAuthorName).then((meiXML) => {
       // extract title
-      let title = extractTitleFromMeiXML(meiXML);
+      const title = extractTitleFromMeiXML(meiXML);
       item['title'] = title;
 
       paginatedScores.value.push(item);
@@ -177,13 +177,13 @@ function LoadPageN() {
           scale: zoom,
         };
         verovio.tk.setOptions(options);
-        let index = paginatedScores.value.findIndex((score) => score.source === fileName);
+        const index = paginatedScores.value.findIndex((score) => score.source === fileName);
         if (index !== -1) {
           verovio.tk.loadData(meiXML);
           paginatedScores.value[index]['svg'] = verovio.tk.renderToSVG(1);
           if (!isCollectionData) {
             // color the matches
-            colorMatches(paginatedScores.value[index].matches)
+            colorMatches(paginatedScores.value[index].matches);
           }
         }
       });

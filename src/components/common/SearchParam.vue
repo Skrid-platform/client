@@ -69,12 +69,12 @@
           </label>
           <br />
           <label id="transpose-lb" class="tooltip-lb">
-            <input id="transpose-cb" type="checkbox" v-model="transposition_cb" :disabled="!pitch_cb"/>
+            <input id="transpose-cb" type="checkbox" v-model="transposition_cb" :disabled="!pitch_cb" />
             Autoriser les transpositions
           </label>
           <br />
           <label id="homothety-lb" class="tooltip-lb">
-            <input id="homothety-cb" type="checkbox" v-model="homothety_cb" :disabled="!rhythm_cb"/>
+            <input id="homothety-cb" type="checkbox" v-model="homothety_cb" :disabled="!rhythm_cb" />
             Autoriser les variations de tempo
           </label>
           <br />
@@ -86,7 +86,16 @@
         <div class="fuzzy-options">
           <label class="tooltip-lb" id="pitch-dist-lb">
             Tolérance de hauteur
-            <input type="number" min="0" value="0" step="0.5" id="pitch-dist-select" class="nb-select" v-model="pitch_dist" :disabled="!pitch_cb"/>
+            <input
+              type="number"
+              min="0"
+              value="0"
+              step="0.5"
+              id="pitch-dist-select"
+              class="nb-select"
+              v-model="pitch_dist"
+              :disabled="!pitch_cb"
+            />
             <!-- <span class='tooltiptext'>Permet d'augmenter la tolérance sur la hauteur de note (en tons)</span> -->
           </label>
 
@@ -116,7 +125,6 @@
               class="nb-select-large"
               v-model="duration_gap"
               :disabled="!rhythm_cb"
-
             />
             <!-- <span class='tooltiptext'>Permet de sauter des notes (en durée : 1 pour pleine, 0.5 pour ronde, 0.25 pour croche, ...)</span> -->
           </label>
@@ -213,7 +221,7 @@ function searchButtonHandler() {
 
   if (!pitch_cb.value && !rhythm_cb.value) {
     alert(
-      'You have ignored all settings (pitch, rhythm and contour).\nPlease select at least one.\nIf you want to browse the scores, check the collection page.'
+      'You have ignored all settings (pitch, rhythm and contour).\nPlease select at least one.\nIf you want to browse the scores, check the collection page.',
     );
     return;
   }

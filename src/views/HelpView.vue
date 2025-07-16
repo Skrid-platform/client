@@ -28,33 +28,18 @@
             </p>
             <br />
             <div class="card mx-auto" style="width: 50rem; border: none">
-              <img
-                id="mobileIMG"
-                src="/images/1.svg"
-                class="img-fluid rounded mx-auto d-block"
-                alt="Interface du piano"
-              />
+              <img id="mobileIMG" src="/images/1.svg" class="img-fluid rounded mx-auto d-block" alt="Interface du piano" />
             </div>
             <br />
             <div class="card mx-auto" style="width: 50rem; border: none">
-              <img
-                id="mobileIMG"
-                src="/images/2.svg"
-                class="img-fluid rounded mx-auto d-block"
-                alt="Interface du piano"
-              />
+              <img id="mobileIMG" src="/images/2.svg" class="img-fluid rounded mx-auto d-block" alt="Interface du piano" />
             </div>
             <br />
             <hr />
             <p>L'option "touches" permet quant à elle d'afficher ou non les notes et touches du clavier associées.</p>
             <br />
             <div class="card mx-auto" style="width: 50rem; border: none">
-              <img
-                id="mobileIMG"
-                src="/images/3.svg"
-                class="img-fluid rounded mx-auto d-block"
-                alt="Interface du piano"
-              />
+              <img id="mobileIMG" src="/images/3.svg" class="img-fluid rounded mx-auto d-block" alt="Interface du piano" />
             </div>
           </div>
         </div>
@@ -161,5 +146,4 @@ defineOptions({
 });
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

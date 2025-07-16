@@ -34,9 +34,9 @@ const router = createRouter({
     {
       path: '/searchInterface',
       name: 'searchInterface',
-      component: SearchInterfaceView
-    }
+      component: SearchInterfaceView,
+    },
   ],
-})
+});
 
-export default router
+export default router;

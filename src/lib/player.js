@@ -1,5 +1,5 @@
-import { durationNoteWithDots } from "../constants";
-import { ref } from "vue";
+import { durationNoteWithDots } from '../constants';
+import { ref } from 'vue';
 /**
  * Class defining methods to play music from the vexflow stave
  */
@@ -59,8 +59,7 @@ class Player {
    * @param {Audio} [audio=null] - if not null, use this audio to make the sound
    * */
   playTune(note, audio = null) {
-    if (note == 'r')
-      return;
+    if (note == 'r') return;
 
     note = note.toUpperCase();
 
@@ -71,7 +70,8 @@ class Player {
 
     let key = note.replace('#', 's');
 
-    if (key.includes('s')) { // convert sharp to flat
+    if (key.includes('s')) {
+      // convert sharp to flat
       const Notes = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
 
       for (let k = 0; k < Notes.length; ++k) {
@@ -96,8 +96,7 @@ class Player {
    * @param {Audio} [audio=null] - if not null, use this audio to stop the sound.
    */
   stopTune(note, audio = null) {
-    if (note == 'r')
-      return;
+    if (note == 'r') return;
 
     note = note.toUpperCase();
 
@@ -112,8 +111,7 @@ class Player {
       let newVolume = audio.volume - 1 / 8;
       if (newVolume > 0) {
         audio.volume = newVolume;
-      }
-      else {
+      } else {
         clearInterval(fadeAudio);
         audio.pause();
       }
@@ -139,7 +137,7 @@ class Player {
         clearInterval(stopAudio);
         class_inst.stopTune(note, audio);
       }
-    }, 1)
+    }, 1);
   }
 
   /**
@@ -148,7 +146,7 @@ class Player {
    * @param {number} ms - the time to wait, in ms.
    */
   #sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   /**
@@ -167,14 +165,14 @@ class Player {
       if (!this.#stop_melody) {
         let duration = melody[k].dots > 0 ? melody[k].duration + 'd' : melody[k].duration;
 
-        if (melody[k].noteType == 'r')
-          this.playNoteWithRhythm('r')
+        if (melody[k].noteType == 'r') this.playNoteWithRhythm('r');
         else
-          melody[k].keys.forEach((key) => { this.playNoteWithRhythm(key.replace('/', ''), duration) }); // Play chord (or just one note)
+          melody[k].keys.forEach((key) => {
+            this.playNoteWithRhythm(key.replace('/', ''), duration);
+          }); // Play chord (or just one note)
 
         await this.#sleep(1000 * durationNoteWithDots[duration]);
-      }
-      else {
+      } else {
         this.#stop_melody = false;
         break;
       }

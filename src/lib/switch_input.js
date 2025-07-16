@@ -1,4 +1,4 @@
-import { ref } from "vue";
+import { ref } from 'vue';
 
 /**
  * Class helping to switch from the piano and the microphone.
@@ -63,12 +63,9 @@ class SwitchInput {
    * Toggles the internal value of the switch.
    */
   toggle() {
-    if (this.isPianoSelected())
-      this.displayMicrophone();
-    else
-      this.displayPiano();
+    if (this.isPianoSelected()) this.displayMicrophone();
+    else this.displayPiano();
   }
 }
 
 export default SwitchInput;
-

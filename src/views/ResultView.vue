@@ -49,25 +49,20 @@
 </template>
 
 <script setup>
-import { onMounted } from "vue";
+import { onMounted } from 'vue';
 
 defineOptions({
   name: 'ResultView',
 });
 
-let props = defineProps({
+const props = defineProps({
   titre: {
     type: String,
     required: true,
   },
 });
 
-
-
-onMounted(() => {
-  
-});
+onMounted(() => {});
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
