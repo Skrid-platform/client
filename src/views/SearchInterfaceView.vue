@@ -2,8 +2,12 @@
   <div>
     <div class="search-pattern">
       <stave></stave>
-      <!-- <keyboard></keyboard> -->
-      <micro-recorder></micro-recorder>
+
+      <switch-input></switch-input>
+
+      <keyboard v-if="switchInput.piano_selected.value"></keyboard>
+      <micro-recorder v-else></micro-recorder>
+
       <search-param @receiveData="getData" @showPaginatedResult="showPaginatedResults()"></search-param>
     </div>
     <paginated-results :loading="resultsIsLoading" :data="searchResults" v-if="paginatedIsShown"/>
@@ -12,15 +16,21 @@
 
 <script setup>
 import Stave from '@/components/common/Stave.vue';
+import SwitchInput from '@/components/common/SwitchInput.vue';
 import Keyboard from '@/components/common/Keyboard.vue';
 import MicroRecorder from '@/components/common/MicroRecorder.vue';
 import SearchParam from '@/components/common/SearchParam.vue';
 import PaginatedResults from '@/components/common/PaginatedResults.vue';
+
+import SwitchInputClass from '@/lib/switch_input.js';
+
 import { ref } from 'vue';
 
 defineOptions({
   name: 'SearchInterfaceView',
 });
+
+const switchInput = SwitchInputClass.getInstance();
 
 const paginatedIsShown = ref(false);
 const searchResults = ref([]);
@@ -59,4 +69,5 @@ function getData(data) {
   margin-bottom: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
 </style>
