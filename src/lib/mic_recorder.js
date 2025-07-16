@@ -1,4 +1,3 @@
-import { durationNoteWithDots } from "../constants";
 import StaveRepresentation from '@/lib/stave.js';
 import { ref } from "vue";
 import api from "../services/axios.ts";
@@ -8,8 +7,10 @@ import api from "../services/axios.ts";
  * the stave.
  */
 class MicroRecorder {
-  /** Store when the user records the melody
+  /**
+   * Store when the user records the melody
    * ref makes it reactive for Vue to update the UI
+   *
    * @type {ref<boolean>}
    * @default false
    */
