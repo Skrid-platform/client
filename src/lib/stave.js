@@ -43,7 +43,7 @@ class StaveRepresentation {
      * If it does not exist, creates a new one.
      * @param {number} [width=450] - the width of the representation of the stave
      * @param {number} [height=200] - the height of the representation of
-     * 
+     *
      * @returns {StaveRepresentation} - the instance of the stave representation.
      */
     static getInstance(width = 450, height = 200) {
@@ -52,7 +52,7 @@ class StaveRepresentation {
         }
         return this.#instance;
     }
-    
+
     /**
      * Initiates the HTML (vexflow).
      * Also connects the buttons.

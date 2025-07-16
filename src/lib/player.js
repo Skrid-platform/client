@@ -6,20 +6,20 @@ import { ref } from "vue";
 class Player {
     // #currently_played_notes;
 
-    /** Stores notes when they are beeing played 
+    /** Stores notes when they are beeing played
      * @type {Object.<string, {audio: Audio}>}
      * @default {}
     */
     #currently_played_notes_playback;
 
-    /** Store when the user plays the melody 
+    /** Store when the user plays the melody
      * ref makes it reactive for Vue to update the UI
      * @type {Ref<boolean>}
      * @default false
     */
     is_playing = ref(false);
 
-    /** Flag to stop the melody from playing 
+    /** Flag to stop the melody from playing
      * @type {boolean}
      * @default false
     */
@@ -62,6 +62,8 @@ class Player {
         if (note == 'r')
             return;
 
+        note = note.toUpperCase();
+
         if (audio == null) {
             this.#currently_played_notes_playback[note] = { audio: new Audio() };
             audio = this.#currently_played_notes_playback[note].audio;
@@ -96,6 +98,8 @@ class Player {
     stopTune(note, audio = null) {
         if (note == 'r')
             return;
+
+        note = note.toUpperCase();
 
         let note_arr = note.replace('/', '');
 
@@ -189,7 +193,7 @@ class Player {
     /**
      * Sets the volume of the audio.
      * Also change the volume of all currently played notes.
-     * @param {*} volume 
+     * @param {number} volume
      */
     setVolume(volume) {
         if (volume < 0 || volume > 1) {
