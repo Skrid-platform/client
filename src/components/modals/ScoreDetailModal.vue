@@ -19,34 +19,36 @@
           </div>
         </div>
 
-        <div class="score-details" v-if="scoreData.matches && scoreData.matches.length > 0">
+        <div class="score-details">
           <!-- Affichage de la partition -->
           <div class="score-display">
             <div v-html="scoreSvg" class="svg-container" ref="svgContainer"></div>
           </div>
-          <div class="results-details">
-            <!-- Échelle de couleur -->
-            <div class="color-scale">
-              <h3>Échelle de satisfaction</h3>
-              <div class="color-gradient">
-                <div class="gradient-bar"></div>
-                <div class="gradient-labels">
-                  <span>0%</span>
-                  <span>50%</span>
-                  <span>100%</span>
+          <div v-if="scoreData.matches && scoreData.matches.length > 0">
+            <div class="results-details">
+              <!-- Échelle de couleur -->
+              <div class="color-scale">
+                <h3>Échelle de satisfaction</h3>
+                <div class="color-gradient">
+                  <div class="gradient-bar"></div>
+                  <div class="gradient-labels">
+                    <span>0%</span>
+                    <span>50%</span>
+                    <span>100%</span>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <!-- Contrôles de sélection des résultats -->
-            <div class="match-controls">
-              <h3>Résultats de recherche</h3>
-              <div class="match-list">
-                <div v-for="(match, index) in scoreData.matches" :key="index" class="match-item">
-                  <label>
-                    <input type="checkbox" checked @click="toggleMatchHighlight(match)" />
-                    Résultat {{ index + 1 }} ({{ Math.floor(match.overall_degree * 100) }}%)
-                  </label>
+              <!-- Contrôles de sélection des résultats -->
+              <div class="match-controls">
+                <h3>Résultats de recherche</h3>
+                <div class="match-list">
+                  <div v-for="(match, index) in scoreData.matches" :key="index" class="match-item">
+                    <label>
+                      <input type="checkbox" checked @click="toggleMatchHighlight(match)" />
+                      Résultat {{ index + 1 }} ({{ Math.floor(match.overall_degree * 100) }}%)
+                    </label>
+                  </div>
                 </div>
               </div>
             </div>
@@ -91,7 +93,6 @@ const playStatus = computed(() => {
   if (isStoppedAudio.value) return 'Jouer';
 });
 
-
 // Composable pour la gestion audio
 const {
   playScore,
@@ -122,14 +123,13 @@ const renderScore = async () => {
   verovio.tk.loadData(props.scoreData.meiXML);
   scoreSvg.value = verovio.tk.renderToSVG(1);
 
+  await nextTick();
   // Appliquer le surlignage initial
   updateHighlighting();
 };
 
 // Mettre à jour le surlignage des notes
 const updateHighlighting = async () => {
-  await nextTick();
-
   // Effacer tous les surlignages existants
   clearHighlighting();
   await nextTick();
@@ -168,7 +168,9 @@ const toggleMatchHighlight = (match) => {
 };
 
 // Effacer tous les surlignages
-const clearHighlighting = () => {
+const clearHighlighting = async () => {
+  await nextTick();
+  if (!svgContainer.value) return;
   const noteElements = svgContainer.value.querySelectorAll('[id^="note-"]');
   noteElements.forEach((element) => {
     element.setAttribute('fill', 'black');
@@ -188,6 +190,7 @@ const highlightCurrentNote = (noteId) => {
 };
 
 const removePreviousHighlighting = () => {
+  console.log('Removing previous highlighting', svgContainer.value);
   const highlighted = svgContainer.value.querySelectorAll('.currently-playing');
   highlighted.forEach((el) => el.classList.remove('currently-playing'));
 };
@@ -207,9 +210,7 @@ const stopPlayback = () => {
   stopScore();
   isPlayingAudio.value = false;
 
-  // Effacer les surlignages de lecture
-  const highlighted = svgContainer.value.querySelectorAll('.currently-playing');
-  highlighted.forEach((el) => el.classList.remove('currently-playing'));
+  removePreviousHighlighting();
 };
 
 const updateTempo = () => {
@@ -245,7 +246,9 @@ watch(
 
 // Configuration du callback pour le surlignage pendant la lecture
 onMounted(() => {
-  setHighlightCallbacks(highlightCurrentNote, removePreviousHighlighting);
+  if (props.scoreData.matches && props.scoreData.matches.length > 0) {
+    setHighlightCallbacks(highlightCurrentNote, removePreviousHighlighting);
+  }
 });
 
 onUnmounted(() => {
