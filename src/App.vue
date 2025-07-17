@@ -25,6 +25,10 @@ onMounted(() => {
 </script>
 
 <style>
+.stop-scroll {
+  overflow: hidden;
+}
+
 body {
   padding: 0;
   margin: 0;
