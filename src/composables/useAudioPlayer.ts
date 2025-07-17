@@ -110,7 +110,7 @@ export function useAudioPlayer() {
       const events: Array<{ time: number; note: ParsedNote }> = [];
       let currentTime = 0;
 
-      parsedNotes.forEach((note, index) => {
+      parsedNotes.forEach((note) => {
         events.push({
           time: currentTime,
           note: note,

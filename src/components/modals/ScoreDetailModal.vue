@@ -45,10 +45,17 @@
             <!-- Contrôles de sélection des résultats -->
             <div class="match-controls">
               <h3>Résultats de recherche</h3>
+              <button @click="selectAllMatches" class="control-button">Tout sélectionner</button>
+              <button @click="deselectAllMatches" class="control-button">Tout désélectionner</button>
               <div class="match-list">
                 <div v-for="(match, index) in scoreData.matches" :key="index" class="match-item">
                   <label>
-                    <input type="checkbox" checked @click="toggleMatchHighlight(match)" />
+                    <input 
+                      type="checkbox" 
+                      v-model="selectedMatchIndices" 
+                      :value="index"
+                      @change="refreshHighlighting"
+                    />
                     Résultat {{ index + 1 }} ({{ Math.floor(match.overall_degree * 100) }}%)
                   </label>
                 </div>
@@ -87,6 +94,7 @@ const emit = defineEmits(['close']);
 const verovio = useVerovioStore();
 const scoreSvg = ref('');
 const selectedMatches = ref([]);
+const selectedMatchIndices = ref([]);
 const tempo = ref(120);
 const svgContainer = ref(null);
 const playStatus = computed(() => {
@@ -127,41 +135,56 @@ const renderScore = async () => {
 
   await nextTick();
   // Appliquer le surlignage initial
-  highlightAllMatches();
+  refreshHighlighting();
 };
 
-// Mettre à jour le surlignage des notes
-const highlightAllMatches = async () => {  // Appliquer le surlignage pour les résultats sélectionnés
-  if (props.scoreData.matches) {
-    selectedMatches.value.forEach((match) => {
-      if (match.notes) {
-        match.notes.forEach((note) => {
-          const noteElement = svgContainer.value.querySelector(`#${note.id} .notehead`);
-          if (noteElement) {
-            const color = getGradientColor(note.note_deg);
-            noteElement.setAttribute('fill', color);
-          }
-        });
-      }
-    });
+// Rafraîchir le surlignage selon les matches sélectionnés
+const refreshHighlighting = async () => {
+  await nextTick();
+  
+  // Effacer tous les surlignages existants
+  clearAllHighlighting();
+  
+  if (!props.scoreData.matches || selectedMatchIndices.value.length === 0) {
+    return;
   }
-};
+  
+  // La liste des matches est déjà triée, donc on peut juste la renverser
+  const sortedSelectedMatches = selectedMatchIndices.value.sort((a, b) => b - a).map(index => props.scoreData.matches[index]);
 
-// Toggle match highlighting
-const toggleMatchHighlight = (match) => {
-  if (match.notes) {
-    match.notes.forEach((note) => {
-      const noteElement = svgContainer.value.querySelector(`#${note.id} .notehead`);
-      if (noteElement) {
-        if (noteElement.getAttribute('fill') === 'black') {
+  // Appliquer le surlignage dans l'ordre (le meilleur score écrasera les autres)
+  sortedSelectedMatches.forEach((match) => {
+    if (match.notes) {
+      match.notes.forEach((note) => {
+        const noteElement = svgContainer.value?.querySelector(`#${note.id} .notehead`);
+        if (noteElement) {
           const color = getGradientColor(note.note_deg);
           noteElement.setAttribute('fill', color);
-        } else {
-          noteElement.setAttribute('fill', 'black'); // Remove highlight
         }
-      }
-    });
-  }
+      });
+    }
+  });
+};
+
+// Effacer tous les surlignages
+const clearAllHighlighting = () => {
+  if (!svgContainer.value) return;
+  const noteElements = svgContainer.value.querySelectorAll('.notehead');
+  noteElements.forEach((element) => {
+    element.setAttribute('fill', 'black');
+  });
+};
+
+// Sélectionner tous les matches
+const selectAllMatches = () => {
+  selectedMatchIndices.value = props.scoreData.matches?.map((_, index) => index) || [];
+  refreshHighlighting();
+};
+
+// Désélectionner tous les matches
+const deselectAllMatches = () => {
+  selectedMatchIndices.value = [];
+  refreshHighlighting();
 };
 
 // Surligner une note pendant la lecture
@@ -218,7 +241,7 @@ watch(
   () => props.isOpen,
   (newVal) => {
     if (newVal) {
-      selectedMatches.value = props.scoreData.matches || [];
+      selectedMatchIndices.value = props.scoreData.matches?.map((_, index) => index) || [];
       renderScore();
       document.getElementById('app').classList.add('stop-scroll');
     } else {
@@ -421,6 +444,22 @@ onUnmounted(() => {
   color: #333;
 }
 
+.control-button {
+  margin: 5px 5px 10px 0;
+  padding: 8px 15px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background-color 0.3s;
+}
+
+.control-button:hover {
+  background: #0056b3;
+}
+
 .match-list {
   display: flex;
   flex-direction: column;
@@ -482,11 +521,13 @@ onUnmounted(() => {
 }
 
 /* Style pour la note actuellement jouée */
-.svg-container :deep(.currently-playing) {
+.svg-container :deep(.currently-playing .notehead) {
   fill: #ff6b6b !important;
   stroke: #ff6b6b !important;
   stroke-width: 2px !important;
 }
+
+
 
 /* Animation pour la note jouée */
 @keyframes pulse {
