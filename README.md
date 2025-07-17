@@ -44,14 +44,15 @@ The **frontend** (connecting the client and the backend) is maintained in a sepa
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Getting Started (development setup)
 The following instructions are to run the development server only.
-To run in production, see the README of the frontend.
+
+To deploy in production, see the [frontend's README](https://gitlab.inria.fr/skrid/frontend/-/blob/main/README.md).
 
 ### 1. Clone the repository
 ```bash
 git clone https://gitlab.inria.fr/skrid/client.git
-cd client
+cd client/
 ```
 
 ### 2. Install dependencies
