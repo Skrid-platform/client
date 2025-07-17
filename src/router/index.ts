@@ -34,12 +34,12 @@ const router = createRouter({
     {
       path: '/searchInterface',
       name: 'searchInterface',
-      component: SearchInterfaceView
-    }
+      component: SearchInterfaceView,
+    },
   ],
   scrollBehavior(to, from, savedPosition) {
-    return { left: 0, top: 0 }
-  }
-})
+    return { left: 0, top: 0 };
+  },
+});
 
-export default router
+export default router;

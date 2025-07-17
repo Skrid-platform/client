@@ -234,7 +234,7 @@ watch(
       stopPlayback();
       document.getElementById('app').classList.remove('stop-scroll');
     }
-  }
+  },
 );
 
 // Configuration du callback pour le surlignage pendant la lecture

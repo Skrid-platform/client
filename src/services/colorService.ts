@@ -31,7 +31,11 @@ export function getGradientColor(degree: number): string {
  * @param percent - Pourcentage d'interpolation
  * @returns Couleur interpolée
  */
-function interpolateBetweenColors(fromColor: {r: number, g: number, b: number}, toColor: {r: number, g: number, b: number}, percent: number): string {
+function interpolateBetweenColors(
+  fromColor: { r: number; g: number; b: number },
+  toColor: { r: number; g: number; b: number },
+  percent: number,
+): string {
   const delta = percent / 100;
   const r = Math.round(toColor.r + (fromColor.r - toColor.r) * delta);
   const g = Math.round(toColor.g + (fromColor.g - toColor.g) * delta);
@@ -47,11 +51,11 @@ function interpolateBetweenColors(fromColor: {r: number, g: number, b: number}, 
  */
 export function generateColorPalette(steps: number = 10): string[] {
   const colors: string[] = [];
-  
+
   for (let i = 0; i < steps; i++) {
     const degree = i / (steps - 1);
     colors.push(getGradientColor(degree));
   }
-  
+
   return colors;
 }

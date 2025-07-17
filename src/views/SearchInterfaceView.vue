@@ -5,7 +5,7 @@
       <keyboard></keyboard>
       <search-param @receiveData="getData" @showPaginatedResult="showPaginatedResults()"></search-param>
     </div>
-    <paginated-results :loading="resultsIsLoading" :data="searchResults" v-if="paginatedIsShown"/>
+    <paginated-results :loading="resultsIsLoading" :data="searchResults" v-if="paginatedIsShown" />
   </div>
 </template>
 
@@ -37,7 +37,6 @@ function getData(data) {
   searchResults.value = data;
   resultsIsLoading.value = false; // Set loading state to false after data is received
 }
-
 </script>
 
 <style scoped>

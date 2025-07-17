@@ -1,19 +1,19 @@
-import type { SearchParams } from "@/types/searchParam.ts";
-import api from "./axios.ts";
+import type { SearchParams } from '@/types/searchParam.ts';
+import api from './axios.ts';
 
 /**
  * Fetches the list of authors from the server.
  *
  * @returns {Promise<string[]>} A promise that resolves to an array of authors.
-*/
+ */
 export async function fetchAuthors() {
-    try {
-        const response = await api.get("/collections-names");
-        return response.data;
-    } catch (error) {
-        console.error("Error fetching authors:", error);
-        throw error;
-    }
+  try {
+    const response = await api.get('/collections-names');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching authors:', error);
+    throw error;
+  }
 }
 
 /**
@@ -23,13 +23,13 @@ export async function fetchAuthors() {
  * @returns {Promise<Object>} A promise that resolves to the collection data for the specified author.
  */
 export async function fetchCollectionScoresNamesByAuthor(author: string) {
-    try {
-        const response = await api.get(`/collection/${author}`);
-        return response.data;
-    } catch (error) {
-        console.error("Error fetching collection data of collection" + author + " :", error);
-        throw error;
-    }
+  try {
+    const response = await api.get(`/collection/${author}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching collection data of collection' + author + ' :', error);
+    throw error;
+  }
 }
 
 /**
@@ -39,14 +39,14 @@ export async function fetchCollectionScoresNamesByAuthor(author: string) {
  * @returns {Promise<Object>} A promise that resolves to the MEI file data.
  * */
 export async function fetchMeiFileByFileName(fileName: string, authorName: string) {
-    let author = authorName.replace(/ /g, '-');
-    try {
-        const response = await api.get(`/data/${author}/mei/${fileName}`);
-        return response.data;
-    } catch (error) {
-        console.error("Error fetching MEI file by name:", fileName, "for author:", authorName);
-        throw error;
-    }
+  let author = authorName.replace(/ /g, '-');
+  try {
+    const response = await api.get(`/data/${author}/mei/${fileName}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching MEI file by name:', fileName, 'for author:', authorName);
+    throw error;
+  }
 }
 
 /**
@@ -56,11 +56,11 @@ export async function fetchMeiFileByFileName(fileName: string, authorName: strin
  * @returns {Promise<Object>} A promise that resolves to the query results.
  */
 export async function fetchSearchResults(searchParams: SearchParams) {
-    try {
-        const response = await api.post("/search-results", searchParams);
-        return response.data.results;
-    } catch (error) {
-        console.error("Error fetching /search-results", error);
-        throw error;
-    }
+  try {
+    const response = await api.post('/search-results', searchParams);
+    return response.data.results;
+  } catch (error) {
+    console.error('Error fetching /search-results', error);
+    throw error;
+  }
 }

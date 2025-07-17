@@ -27,13 +27,13 @@
     </div>
   </nav>
 </template>
-  
+
 <script setup>
 defineOptions({
-  name: 'HeaderComponent'
+  name: 'HeaderComponent',
 });
 </script>
-  
+
 <style scoped>
 .navbar-nav,
 .navbar-brand {

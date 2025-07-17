@@ -133,7 +133,7 @@ watch(
       pageNb.value = 1; // reset to first page
       // LoadPageN() not needed because it will be called by the watcher of pageNb
     }
-  }
+  },
 );
 
 function LoadPageN() {
@@ -158,7 +158,7 @@ function LoadPageN() {
     }
 
     fetchMeiFileByFileName(fileName, authors.selectedAuthorName).then((meiXML) => {
-      item["meiXML"] = meiXML; // store the meiXML in the item for later use in the modal
+      item['meiXML'] = meiXML; // store the meiXML in the item for later use in the modal
       // extract title
       let title = extractTitleFromMeiXML(meiXML);
       item['title'] = title;

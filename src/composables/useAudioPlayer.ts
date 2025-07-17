@@ -60,7 +60,7 @@ export function useAudioPlayer() {
           pitch: tonePitch,
           duration: toneDuration,
           time: index * 0.5, // Timing basique, à améliorer
-          id: id || `note-${index}`
+          id: id || `note-${index}`,
         });
       }
     });
@@ -73,12 +73,12 @@ export function useAudioPlayer() {
    */
   const convertMeiDurationToTone = (meiDuration: string): string => {
     const durationMap: Record<string, string> = {
-      '1': '1n',    // whole note
-      '2': '2n',    // half note
-      '4': '4n',    // quarter note
-      '8': '8n',    // eighth note
-      '16': '16n',  // sixteenth note
-      '32': '32n'   // thirty-second note
+      '1': '1n', // whole note
+      '2': '2n', // half note
+      '4': '4n', // quarter note
+      '8': '8n', // eighth note
+      '16': '16n', // sixteenth note
+      '32': '32n', // thirty-second note
     };
 
     return durationMap[meiDuration] || '4n';
@@ -112,7 +112,7 @@ export function useAudioPlayer() {
       parsedNotes.forEach((note, index) => {
         events.push({
           time: currentTime,
-          note: note
+          note: note,
         });
 
         // Calculer le temps pour la prochaine note basé sur la durée actuelle
@@ -146,7 +146,6 @@ export function useAudioPlayer() {
             highlightCallback.value?.(event.note.id);
           }, time);
         }
-
       }, events);
 
       // Démarrer la lecture
@@ -156,7 +155,6 @@ export function useAudioPlayer() {
       isPlayingAudio.value = true;
       isPausedAudio.value = false;
       isStoppedAudio.value = false;
-
     } catch (error) {
       console.error('Erreur lors de la lecture:', error);
     }
@@ -200,7 +198,7 @@ export function useAudioPlayer() {
     Tone.getTransport().cancel();
 
     if (highlightCallback.value) {
-        highlightCallback.value?.(''); // Clear highlight (with empty string no new note will be highlighted but the previous one will be cleared)
+      highlightCallback.value?.(''); // Clear highlight (with empty string no new note will be highlighted but the previous one will be cleared)
     }
 
     isPlayingAudio.value = false;
@@ -250,6 +248,6 @@ export function useAudioPlayer() {
     stopScore,
     updateTempo,
     setHighlightCallback,
-    playNote
+    playNote,
   };
 }

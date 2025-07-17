@@ -38,7 +38,7 @@
     </div>
   </footer>
 </template>
-  
+
 <script setup>
 import { RouterLink } from 'vue-router';
 
@@ -46,7 +46,7 @@ defineOptions({
   name: 'FooterComponent',
 });
 </script>
-  
+
 <style scoped>
 .footer {
   padding: 1rem;

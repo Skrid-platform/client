@@ -104,7 +104,7 @@ const authorButtonHandler = (author, index) => {
   /* background-color: #d0d0d0; */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
-.archives{
+.archives {
   margin-left: 18rem;
   width: 100%;
 }
