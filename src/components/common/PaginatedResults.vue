@@ -158,6 +158,7 @@ function LoadPageN() {
     }
 
     fetchMeiFileByFileName(fileName, authors.selectedAuthorName).then((meiXML) => {
+      item["meiXML"] = meiXML; // store the meiXML in the item for later use in the modal
       // extract title
       let title = extractTitleFromMeiXML(meiXML);
       item['title'] = title;
