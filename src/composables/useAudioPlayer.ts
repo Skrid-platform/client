@@ -144,7 +144,8 @@ export function useAudioPlayer() {
         // Surligner la note si un callback est défini
         if (highlightCallback) {
           Tone.getDraw().schedule(() => {
-            highlightCallback?.(event.note.id);
+            removeHighlightCallback?.(); // Retirer le surlignage précédent
+            highlightCallback?.(event.note.id); // Surligner la note actuelle
           }, time);
         }
       }, events);

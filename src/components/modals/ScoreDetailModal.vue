@@ -15,7 +15,7 @@
           <button @click="stopPlayback" class="stop-button">Stop</button>
           <div class="tempo-control">
             <label>Tempo: {{ tempo }} BPM</label>
-            <input type="range" min="60" max="200" v-model="tempo" @input="updateTempo" />
+            <input type="range" step="10" min="60" max="200" v-model="tempo" @input="updateTempo" />
           </div>
         </div>
 
@@ -24,31 +24,29 @@
           <div class="score-display">
             <div v-html="scoreSvg" class="svg-container" ref="svgContainer"></div>
           </div>
-          <div v-if="scoreData.matches && scoreData.matches.length > 0">
-            <div class="results-details">
-              <!-- Échelle de couleur -->
-              <div class="color-scale">
-                <h3>Échelle de satisfaction</h3>
-                <div class="color-gradient">
-                  <div class="gradient-bar"></div>
-                  <div class="gradient-labels">
-                    <span>0%</span>
-                    <span>50%</span>
-                    <span>100%</span>
-                  </div>
+          <div v-if="scoreData.matches && scoreData.matches.length > 0" class="results-details">
+            <!-- Échelle de couleur -->
+            <div class="color-scale">
+              <h3>Échelle de satisfaction</h3>
+              <div class="color-gradient">
+                <div class="gradient-bar"></div>
+                <div class="gradient-labels">
+                  <span>0%</span>
+                  <span>50%</span>
+                  <span>100%</span>
                 </div>
               </div>
+            </div>
 
-              <!-- Contrôles de sélection des résultats -->
-              <div class="match-controls">
-                <h3>Résultats de recherche</h3>
-                <div class="match-list">
-                  <div v-for="(match, index) in scoreData.matches" :key="index" class="match-item">
-                    <label>
-                      <input type="checkbox" checked @click="toggleMatchHighlight(match)" />
-                      Résultat {{ index + 1 }} ({{ Math.floor(match.overall_degree * 100) }}%)
-                    </label>
-                  </div>
+            <!-- Contrôles de sélection des résultats -->
+            <div class="match-controls">
+              <h3>Résultats de recherche</h3>
+              <div class="match-list">
+                <div v-for="(match, index) in scoreData.matches" :key="index" class="match-item">
+                  <label>
+                    <input type="checkbox" checked @click="toggleMatchHighlight(match)" />
+                    Résultat {{ index + 1 }} ({{ Math.floor(match.overall_degree * 100) }}%)
+                  </label>
                 </div>
               </div>
             </div>
@@ -125,21 +123,16 @@ const renderScore = async () => {
 
   await nextTick();
   // Appliquer le surlignage initial
-  updateHighlighting();
+  highlightAllMatches();
 };
 
 // Mettre à jour le surlignage des notes
-const updateHighlighting = async () => {
-  // Effacer tous les surlignages existants
-  clearHighlighting();
-  await nextTick();
-
-  // Appliquer le surlignage pour les résultats sélectionnés
+const highlightAllMatches = async () => {  // Appliquer le surlignage pour les résultats sélectionnés
   if (props.scoreData.matches) {
     selectedMatches.value.forEach((match) => {
       if (match.notes) {
         match.notes.forEach((note) => {
-          const noteElement = svgContainer.value.querySelector(`#${note.id}`);
+          const noteElement = svgContainer.value.querySelector(`#${note.id} .notehead`);
           if (noteElement) {
             const color = getGradientColor(note.note_deg);
             noteElement.setAttribute('fill', color);
@@ -154,7 +147,7 @@ const updateHighlighting = async () => {
 const toggleMatchHighlight = (match) => {
   if (match.notes) {
     match.notes.forEach((note) => {
-      const noteElement = svgContainer.value.querySelector(`#${note.id}`);
+      const noteElement = svgContainer.value.querySelector(`#${note.id} .notehead`);
       if (noteElement) {
         if (noteElement.getAttribute('fill') === 'black') {
           const color = getGradientColor(note.note_deg);
@@ -167,21 +160,8 @@ const toggleMatchHighlight = (match) => {
   }
 };
 
-// Effacer tous les surlignages
-const clearHighlighting = async () => {
-  await nextTick();
-  if (!svgContainer.value) return;
-  const noteElements = svgContainer.value.querySelectorAll('[id^="note-"]');
-  noteElements.forEach((element) => {
-    element.setAttribute('fill', 'black');
-  });
-};
-
 // Surligner une note pendant la lecture
-const highlightCurrentNote = (noteId) => {
-  // Effacer le surlignage précédent
-  removePreviousHighlighting();
-
+const highlightCurrentPlayingNote = (noteId) => {
   // Surligner la note actuelle
   if (!svgContainer.value) return;
   const currentNote = svgContainer.value.querySelector(`#${noteId}`);
@@ -190,8 +170,9 @@ const highlightCurrentNote = (noteId) => {
   }
 };
 
-const removePreviousHighlighting = () => {
-  if (!svgContainer.value) return
+// Effacer le surlignage précédent lors de la lecture
+const removeHighlightPreviousPlayingNote = () => {
+  if (!svgContainer.value) return;
   const highlighted = svgContainer.value.querySelectorAll('.currently-playing');
   highlighted.forEach((el) => el.classList.remove('currently-playing'));
 };
@@ -245,7 +226,7 @@ watch(
 
 // Configuration du callback pour le surlignage pendant la lecture
 onMounted(() => {
-  setHighlightCallbacks(highlightCurrentNote, removePreviousHighlighting);
+  setHighlightCallbacks(highlightCurrentPlayingNote, removeHighlightPreviousPlayingNote);
 });
 
 onUnmounted(() => {
@@ -377,18 +358,17 @@ onUnmounted(() => {
 }
 
 .score-details {
-  position: sticky;
   display: flex;
   width: 100%;
 }
 
 .results-details {
-  display: flex;
-  flex-direction: column;
+  position: sticky;
+  top: 0px;
+  height: fit-content;
 }
 
 .color-scale {
-  margin-bottom: 20px;
   padding: 15px;
   background: #f8f9fa;
   border-radius: 8px;
@@ -420,7 +400,6 @@ onUnmounted(() => {
 }
 
 .match-controls {
-  margin-bottom: 20px;
   padding: 15px;
   background: #f8f9fa;
   border-radius: 8px;
