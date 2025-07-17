@@ -15,7 +15,8 @@ export function useAudioPlayer() {
   const isPlayingAudio = ref(false);
   const isPausedAudio = ref(false);
   const isStoppedAudio = ref(true);
-  const highlightCallback = ref<((id: string) => void) | null>(null);
+  let highlightCallback: ((id: string) => void) | null = null;
+  let removeHighlightCallback: (() => void) | null = null;
 
   let synth: Tone.Synth | null = null;
   let part: Tone.Part | null = null;
@@ -129,7 +130,7 @@ export function useAudioPlayer() {
         return total + Tone.Time(event.note.duration).toSeconds();
       }, 0);
       */
-      Tone.getTransport().scheduleOnce((time) => {
+      Tone.getTransport().scheduleOnce(() => {
         stopScore();
       }, totalDuration);
 
@@ -141,9 +142,9 @@ export function useAudioPlayer() {
         }
 
         // Surligner la note si un callback est défini
-        if (highlightCallback.value) {
+        if (highlightCallback) {
           Tone.getDraw().schedule(() => {
-            highlightCallback.value?.(event.note.id);
+            highlightCallback?.(event.note.id);
           }, time);
         }
       }, events);
@@ -197,8 +198,8 @@ export function useAudioPlayer() {
     Tone.getTransport().stop();
     Tone.getTransport().cancel();
 
-    if (highlightCallback.value) {
-      highlightCallback.value?.(''); // Clear highlight (with empty string no new note will be highlighted but the previous one will be cleared)
+    if (removeHighlightCallback) {
+      removeHighlightCallback();
     }
 
     isPlayingAudio.value = false;
@@ -216,8 +217,9 @@ export function useAudioPlayer() {
   /**
    * Définit le callback pour surligner les notes
    */
-  const setHighlightCallback = (callback: (id: string) => void) => {
-    highlightCallback.value = callback;
+  const setHighlightCallbacks = (highlight: (id: string) => void, removeHighlight: () => void) => {
+    highlightCallback = highlight;
+    removeHighlightCallback = removeHighlight;
   };
 
   /**
@@ -247,7 +249,7 @@ export function useAudioPlayer() {
     resumeScore,
     stopScore,
     updateTempo,
-    setHighlightCallback,
+    setHighlightCallbacks,
     playNote,
   };
 }

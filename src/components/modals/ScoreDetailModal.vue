@@ -22,7 +22,7 @@
         <div class="score-details" v-if="scoreData.matches && scoreData.matches.length > 0">
           <!-- Affichage de la partition -->
           <div class="score-display">
-            <div v-html="scoreSvg" class="svg-container"></div>
+            <div v-html="scoreSvg" class="svg-container" ref="svgContainer"></div>
           </div>
           <div class="results-details">
             <!-- Échelle de couleur -->
@@ -44,7 +44,7 @@
               <div class="match-list">
                 <div v-for="(match, index) in scoreData.matches" :key="index" class="match-item">
                   <label>
-                    <input type="checkbox" checked @click="toggleMatchHighlight(match, index, $event)" />
+                    <input type="checkbox" checked @click="toggleMatchHighlight(match)" />
                     Résultat {{ index + 1 }} ({{ Math.floor(match.overall_degree * 100) }}%)
                   </label>
                 </div>
@@ -84,12 +84,13 @@ const verovio = useVerovioStore();
 const scoreSvg = ref('');
 const selectedMatches = ref([]);
 const tempo = ref(120);
-const numPage = ref(1);
+const svgContainer = ref(null);
 const playStatus = computed(() => {
   if (isPlayingAudio.value) return 'Pause';
   if (isPausedAudio.value) return 'Reprendre';
-  return 'Jouer';
+  if (isStoppedAudio.value) return 'Jouer';
 });
+
 
 // Composable pour la gestion audio
 const {
@@ -101,7 +102,7 @@ const {
   isPlayingAudio,
   isPausedAudio,
   isStoppedAudio,
-  setHighlightCallback,
+  setHighlightCallbacks,
 } = useAudioPlayer();
 
 // Charger la partition complète
@@ -114,6 +115,7 @@ const renderScore = async () => {
     pageHeight: 60000, // show all the partition in one page with scroll
     pageWidth: 1600,
     scale: 40,
+    adjustPageHeight: true, // permet à Verovio d'étendre la hauteur
   };
 
   verovio.tk.setOptions(options);
@@ -121,7 +123,6 @@ const renderScore = async () => {
   scoreSvg.value = verovio.tk.renderToSVG(1);
 
   // Appliquer le surlignage initial
-  await nextTick();
   updateHighlighting();
 };
 
@@ -131,13 +132,14 @@ const updateHighlighting = async () => {
 
   // Effacer tous les surlignages existants
   clearHighlighting();
+  await nextTick();
 
   // Appliquer le surlignage pour les résultats sélectionnés
   if (props.scoreData.matches) {
     selectedMatches.value.forEach((match) => {
       if (match.notes) {
         match.notes.forEach((note) => {
-          const noteElement = document.getElementById(note.id);
+          const noteElement = svgContainer.value.querySelector(`#${note.id}`);
           if (noteElement) {
             const color = getGradientColor(note.note_deg);
             noteElement.setAttribute('fill', color);
@@ -149,10 +151,10 @@ const updateHighlighting = async () => {
 };
 
 // Toggle match highlighting
-const toggleMatchHighlight = (match, index, event) => {
+const toggleMatchHighlight = (match) => {
   if (match.notes) {
     match.notes.forEach((note) => {
-      const noteElement = document.getElementById(note.id);
+      const noteElement = svgContainer.value.querySelector(`#${note.id}`);
       if (noteElement) {
         if (noteElement.getAttribute('fill') === 'black') {
           const color = getGradientColor(note.note_deg);
@@ -167,7 +169,7 @@ const toggleMatchHighlight = (match, index, event) => {
 
 // Effacer tous les surlignages
 const clearHighlighting = () => {
-  const noteElements = document.querySelectorAll('[id^="note-"]');
+  const noteElements = svgContainer.value.querySelectorAll('[id^="note-"]');
   noteElements.forEach((element) => {
     element.setAttribute('fill', 'black');
   });
@@ -176,14 +178,18 @@ const clearHighlighting = () => {
 // Surligner une note pendant la lecture
 const highlightCurrentNote = (noteId) => {
   // Effacer le surlignage précédent
-  const prevHighlighted = document.querySelectorAll('.currently-playing');
-  prevHighlighted.forEach((el) => el.classList.remove('currently-playing'));
+  removePreviousHighlighting();
 
   // Surligner la note actuelle
-  const currentNote = document.getElementById(noteId);
+  const currentNote = svgContainer.value.querySelector(`#${noteId}`);
   if (currentNote) {
     currentNote.classList.add('currently-playing');
   }
+};
+
+const removePreviousHighlighting = () => {
+  const highlighted = svgContainer.value.querySelectorAll('.currently-playing');
+  highlighted.forEach((el) => el.classList.remove('currently-playing'));
 };
 
 // Gestion de la lecture
@@ -202,7 +208,7 @@ const stopPlayback = () => {
   isPlayingAudio.value = false;
 
   // Effacer les surlignages de lecture
-  const highlighted = document.querySelectorAll('.currently-playing');
+  const highlighted = svgContainer.value.querySelectorAll('.currently-playing');
   highlighted.forEach((el) => el.classList.remove('currently-playing'));
 };
 
@@ -234,12 +240,12 @@ watch(
       stopPlayback();
       document.getElementById('app').classList.remove('stop-scroll');
     }
-  },
+  }
 );
 
 // Configuration du callback pour le surlignage pendant la lecture
 onMounted(() => {
-  setHighlightCallback(highlightCurrentNote);
+  setHighlightCallbacks(highlightCurrentNote, removePreviousHighlighting);
 });
 
 onUnmounted(() => {

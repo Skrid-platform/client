@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="search-pattern" :class="{ 'hidde-scroll': isModalOpen }">
+    <div class="search-pattern">
       <stave></stave>
       <keyboard></keyboard>
       <search-param @receiveData="getData" @showPaginatedResult="showPaginatedResults()"></search-param>
