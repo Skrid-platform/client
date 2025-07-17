@@ -3,7 +3,7 @@
     <div class="searchbar-box">
       <h1 class="searchbar-title p-2">Les collections</h1>
     </div>
-    <div class="father_container d-flex flex-row gap-1" id="fatherContainer">
+    <div class="d-flex flex-row gap-1">
       <!-- MENU LEFT -->
       <div
         class="card-lg shadow bg-body-tertiary gap-5 position-fixed rounded-end"

@@ -111,6 +111,7 @@ function prevDataPageHandler() {
 
 watch(pageNb, () => {
   // always keep pageNb in range (1 <= pageNb <= nbPages)
+  if (pageNb.value === '') return; // ne rien faire si pageNb est vide
   if (pageNb.value < 1) {
     pageNb.value = 1;
   } else if (pageNb.value > nbPages) {
@@ -133,7 +134,7 @@ watch(
       pageNb.value = 1; // reset to first page
       // LoadPageN() not needed because it will be called by the watcher of pageNb
     }
-  },
+  }
 );
 
 function LoadPageN() {

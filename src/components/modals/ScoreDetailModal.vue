@@ -2,7 +2,7 @@
   <div v-if="isOpen" class="modal-overlay" @click="handleOverlayClick">
     <div class="modal-content" @click.stop>
       <div class="modal-header">
-        <h2>{{ scoreData.title || 'Partition' }}</h2>
+        <h1>{{ scoreData.title || 'Partition' }}</h1>
         <button class="close-button" @click="closeModal">×</button>
       </div>
 
@@ -183,6 +183,7 @@ const highlightCurrentNote = (noteId) => {
   removePreviousHighlighting();
 
   // Surligner la note actuelle
+  if (!svgContainer.value) return;
   const currentNote = svgContainer.value.querySelector(`#${noteId}`);
   if (currentNote) {
     currentNote.classList.add('currently-playing');
@@ -190,7 +191,7 @@ const highlightCurrentNote = (noteId) => {
 };
 
 const removePreviousHighlighting = () => {
-  console.log('Removing previous highlighting', svgContainer.value);
+  if (!svgContainer.value) return
   const highlighted = svgContainer.value.querySelectorAll('.currently-playing');
   highlighted.forEach((el) => el.classList.remove('currently-playing'));
 };
@@ -209,8 +210,6 @@ const togglePlayback = async () => {
 const stopPlayback = () => {
   stopScore();
   isPlayingAudio.value = false;
-
-  removePreviousHighlighting();
 };
 
 const updateTempo = () => {
@@ -246,9 +245,7 @@ watch(
 
 // Configuration du callback pour le surlignage pendant la lecture
 onMounted(() => {
-  if (props.scoreData.matches && props.scoreData.matches.length > 0) {
-    setHighlightCallbacks(highlightCurrentNote, removePreviousHighlighting);
-  }
+  setHighlightCallbacks(highlightCurrentNote, removePreviousHighlighting);
 });
 
 onUnmounted(() => {
@@ -279,7 +276,7 @@ onUnmounted(() => {
   flex-shrink: 0;
 }
 
-.modal-header h2 {
+.modal-header h1 {
   flex: 1;
   text-align: center;
   font-size: 24px;
