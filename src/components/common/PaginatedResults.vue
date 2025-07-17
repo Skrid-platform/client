@@ -54,7 +54,7 @@
 <script setup>
 import { useAuthorsStore } from '@/stores/authorsStore';
 import { useVerovioStore } from '@/stores/verovioStore';
-import { getPageN, extractTitleFromMeiXML, colorMatches } from '@/services/dataManagerServices';
+import { getPageN, extractTitleAuthorComment, removePgHead, colorMatches } from '@/services/dataManagerServices';
 import { fetchMeiFileByFileName } from '@/services/dataBaseQueryServices';
 import { computed, ref, watch } from 'vue';
 import ScoreDetailModal from '@/components/modals/ScoreDetailModal.vue';
@@ -159,15 +159,15 @@ function LoadPageN() {
     }
 
     fetchMeiFileByFileName(fileName, authors.selectedAuthorName).then((meiXML) => {
-      item['meiXML'] = meiXML; // store the meiXML in the item for later use in the modal
       // extract title
-      let title = extractTitleFromMeiXML(meiXML);
-      
+      let { title, author, comment } = extractTitleAuthorComment(meiXML);
       item['title'] = title;
-
+      item['author'] = author;
+      item['comment'] = comment;
       paginatedScores.value.push(item);
       // remove title, author and comment that are overlapping each other and are not useful in the preview
-      meiXML = meiXML.replace(/<pgHead.*?<\/pgHead>/s, '');
+      meiXML = removePgHead(meiXML);
+      item['meiXML'] = meiXML; // store the meiXML in the item for later use in the modal
       verovio.ensureTkInitialized().then(() => {
         // parameters for rendering
         // same as in ejs version

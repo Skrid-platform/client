@@ -82,8 +82,8 @@ export function extractTitleFromMeiXML(meiXML: string): string {
   return (
     meiXML
       .match(/<pgHead.*?<\/pgHead>/s)?.[0]
-      .match(/<rend.*?<\/rend>/s)?.[0]
-      .match(/>.*?</s)?.[0]
+      ?.match(/<rend.*?<\/rend>/s)?.[0]
+      ?.match(/>.*?</s)?.[0]
       .slice?.(1, -1) ?? // if no pgHead found, try to get title from <title> tag
     meiXML
       .match(/<title>.*?<\/title>/s)?.[0]
@@ -91,4 +91,64 @@ export function extractTitleFromMeiXML(meiXML: string): string {
       .slice?.(1, -1) ?? // if no title found, return a default value
     'Titre inconnu'
   );
+}
+
+export function extractAuthorFromMeiXML(meiXML: string): string {
+  // Try to extract the author from the <pgHead> tag
+  return (
+    meiXML
+      .match(/<pgHead.*?>.*?<\/pgHead>/s)?.[0]
+      ?.match(/<rend.*?>.*?<\/rend>/gs)?.[1]
+      ?.match(/>.*?</s)?.[0]
+      .slice?.(1, -1) ?? // if no pgHead found, try to get author from <author> tag
+    meiXML
+      .match(/<author>.*?<\/author>/s)?.[0]
+      .match(/>.*?</s)?.[0]
+      .slice?.(1, -1) ?? // if no author found, return a default value
+    ''
+  );
+}
+
+export function extractCommentFromMeiXML(meiXML: string): string {
+  // Try to extract the comment from the <pgHead> tag
+  return (
+    meiXML
+      .match(/<pgHead.*?<\/pgHead>/s)?.[0]
+      ?.match(/<rend.*?<\/rend>/gs)?.[2]
+      ?.match(/>.*?</s)?.[0]
+      .slice?.(1, -1) ?? // if no pgHead found, try to get author from <author> tag
+    meiXML
+      .match(/<author>.*?<\/author>/s)?.[0]
+      .match(/>.*?</s)?.[0]
+      .slice?.(1, -1) ?? // if no author found, return a default value
+    ''
+  );
+}
+
+/**
+ * Extract the title, author and comment from the MEI file
+ * it avoid text overlapping when the title, author and comment are too long.
+ * @param {string} meiXML - the MEI file content
+ * @returns {object} the title, author and comment
+ */
+export function extractTitleAuthorComment(meiXML: string): {title: string, author: string, comment: string} {
+    // extract title, author and comment
+    const title = extractTitleFromMeiXML(meiXML);
+    const author = extractAuthorFromMeiXML(meiXML);
+    const comment = extractCommentFromMeiXML(meiXML);
+
+    return {
+        title,
+        author,
+        comment
+    };
+}
+
+/**
+ * Remove the <pgHead> section from the MEI file that is overlapping
+ * @param {string} meiXML - the MEI file content
+ * @returns {string} the MEI file content without the <pgHead> section
+ */
+export function removePgHead(meiXML: string): string {
+  return meiXML.replace(/<pgHead.*?<\/pgHead>/s, '');
 }

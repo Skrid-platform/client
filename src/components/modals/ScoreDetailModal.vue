@@ -23,6 +23,10 @@
           <!-- Affichage de la partition -->
           <div class="score-display">
             <div v-html="scoreSvg" class="svg-container" ref="svgContainer"></div>
+            <div class="score-footer">
+              <h6 v-if="scoreData.author" class="score-author">{{ scoreData.author }}</h6>
+              <p v-if="scoreData.comment" class="score-comment"><span class="comment">Commentaire:</span> <br>{{ scoreData.comment }}</p>
+            </div>
           </div>
           <div v-if="scoreData.matches && scoreData.matches.length > 0" class="results-details">
             <!-- Échelle de couleur -->
@@ -300,6 +304,7 @@ onUnmounted(() => {
 
 .modal-body {
   flex: 1;
+  gap: 20px;
   overflow-y: auto;
   padding: 15px;
 }
@@ -310,7 +315,8 @@ onUnmounted(() => {
   justify-content: center;
   gap: 15px;
   padding: 15px;
-  background: #f8f9fa;
+  margin-bottom: 15px;
+  background: #f0f0f0;
   border-radius: 8px;
 }
 
@@ -359,24 +365,28 @@ onUnmounted(() => {
 
 .score-details {
   display: flex;
+  gap: 15px;
   width: 100%;
 }
 
 .results-details {
   position: sticky;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
   top: 0px;
   height: fit-content;
 }
 
 .color-scale {
   padding: 15px;
-  background: #f8f9fa;
+  background: #f0f0f0;
   border-radius: 8px;
 }
 
 .color-scale h3 {
   margin: 0 0 10px 0;
-  color: #333;
+  color: #000;
 }
 
 .color-gradient {
@@ -395,13 +405,14 @@ onUnmounted(() => {
 .gradient-labels {
   display: flex;
   justify-content: space-between;
-  font-size: 12px;
-  color: #666;
+  font-size: 14px;
+  font-weight: bold;
+  color: #000;
 }
 
 .match-controls {
   padding: 15px;
-  background: #f8f9fa;
+  background: #f0f0f0;
   border-radius: 8px;
 }
 
@@ -432,12 +443,32 @@ onUnmounted(() => {
 .score-display {
   flex: 1;
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
   background: white;
   border: 1px solid #c0c0c0;
   border-radius: 8px;
   padding: 20px;
   overflow: auto;
+}
+
+.score-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.score-author {
+  font-size: 16px;
+  font-weight: bold;
+  align-self: flex-end;
+  padding: 5px;
+}
+
+.comment {
+  font-weight: bold;
 }
 
 .svg-container {
