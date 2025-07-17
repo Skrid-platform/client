@@ -45,6 +45,8 @@ The **frontend** (connecting the client and the backend) is maintained in a sepa
 ---
 
 ## 🚀 Getting Started
+The following instructions are to run the development server only.
+To run in production, see the README of the frontend.
 
 ### 1. Clone the repository
 ```bash
@@ -57,7 +59,13 @@ cd client
 npm install
 ```
 
-### 3. Start the vue server (for development)
+### 3. Create the `.env` file
+Copy the example `.env` file and adjust the values:
+```bash
+cp .env.example .env
+```
+
+### 4. Start the vue server (for development)
 ```bash
 npm run dev
 ```
