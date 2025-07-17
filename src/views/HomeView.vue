@@ -1,19 +1,16 @@
 <template>
   <div class="container-main">
     <!-- Section principale -->
-    <div class="searchbar-box text-center animate__animated animate__fadeInDown">
-      <div class="container mb-5">
-        <br />
-        <h1 class="text-white">SKRID</h1>
-        <p></p>
-        <a href="#services" class="btn btn-outline btn-lg mt-3" style="background-color: #7ab6e0">En savoir plus</a>
-      </div>
+
+    <div class="project-title">
+      <br />
+      <h1 class="text-white">SKRID</h1>
+      <p></p>
+      <a href="#services" class="btn btn-outline btn-lg mt-3" style="background-color: #7ab6e0">En savoir plus</a>
     </div>
     <!-- Section des services -->
     <section id="services" class="services py-5">
       <div class="container">
-        <h2 class="text-lest mb-4 text-center" style="color: #006485">Le projet</h2>
-
         <p class="text-center text-muted mb-5">
           La plateforme Skrid est développée et maintenue par le laboratoire IRISA (site de Lannion). Cette plateforme est un
           prototype d&eacute;di&eacute; &agrave; la mise en oeuvre de techniques de recherche de contenu musical
@@ -107,11 +104,12 @@ defineOptions({
 </script>
 
 <style scoped>
-.hero {
-  background: white;
-  color: white;
-  padding: 4rem 0;
+.project-title {
   text-align: center;
+  color: white;
+  padding-bottom: 20px;
+  background: rgb(0, 100, 150);
+  width: 100%;
 }
 
 .services .card {

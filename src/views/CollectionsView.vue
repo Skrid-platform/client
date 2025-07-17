@@ -3,7 +3,7 @@
     <div class="searchbar-box">
       <h1 class="searchbar-title p-2">Les collections</h1>
     </div>
-    <div class="father_container d-flex flex-row gap-1" id="fatherContainer">
+    <div class="d-flex flex-row gap-1">
       <!-- MENU LEFT -->
       <div id="collectionMenu" class="card-lg shadow bg-body-tertiary gap-5 position-fixed rounded-end">
         <div class="card-header text-center fs-1 d-flex flex-column">
@@ -76,21 +76,13 @@ const authorButtonHandler = (author, index) => {
 </script>
 
 <style scoped>
-#menuCollection {
-  margin-top: 8%;
-}
-
-#collectionMenu {
-  width: 18rem;
-  left: 0px;
-  z-index: 1;
-  padding-bottom: 2rem;
-}
-
 .searchbar-box {
   background-color: white;
   color: black;
-  border-bottom: 0.5px solid aqua;
+  width: 100% !important;
+  justify-content: center;
+  align-items: center;
+  display: flex;
 }
 .selected {
   background-color: #006485;

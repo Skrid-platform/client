@@ -57,11 +57,7 @@ function getData(data) {
   align-items: center;
   flex-direction: column;
   padding: 20px;
-  margin-top: 70px;
   gap: 10px;
-  /* border-radius: 20px; */
-  /* background-color: rgb(198, 198, 235); */
-  /* width: 1000px; */
   position: relative;
   background-color: #f9f9f9;
   border-radius: 8px;

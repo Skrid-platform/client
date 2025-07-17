@@ -23,20 +23,12 @@
     <div class="results-container" id="results-container">
       <h3 v-if="props.loading" class="text-center">Chargement</h3>
       <h3 v-else-if="props.data.length == 0" class="text-center">Aucun résultat</h3>
-      <a
-        v-else
-        v-for="(score, index) in paginatedScores"
-        :key="index"
-        :href="'/result?author=' + authors.selectedAuthorName + '&score_name=' + score.name"
-        class="score-preview"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
+      <div v-else v-for="(score, index) in paginatedScores" :key="index" class="score-preview" @click="openScoreDetail(score)">
         <div class="music-score-box" :id="score.source" v-html="score.svg"></div>
         <p v-if="score.number_of_occurrences" class="score_author">Occurences : {{ score.number_of_occurrences }}</p>
         <p v-if="score.max_match_degree" class="score_author">Satisfaction : {{ Math.floor(score.max_match_degree * 100) }}%</p>
         <h4 v-if="score.title" class="score_title">{{ score.title }}</h4>
-      </a>
+      </div>
     </div>
 
     <div class="navigation" v-if="nbPages > 1">
@@ -48,15 +40,24 @@
         Page suivante
       </button>
     </div>
+
+    <!-- Modal de détail de la partition -->
+    <ScoreDetailModal
+      :is-open="isModalOpen"
+      :score-data="selectedScore"
+      :author-name="authors.selectedAuthorName"
+      @close="closeModal"
+    />
   </div>
 </template>
 
 <script setup>
 import { useAuthorsStore } from '@/stores/authorsStore';
 import { useVerovioStore } from '@/stores/verovioStore';
-import { getPageN, extractTitleFromMeiXML, colorMatches } from '@/services/dataManagerServices';
+import { getPageN, extractTitleAuthorComment, removePgHead, colorMatches } from '@/services/dataManagerServices';
 import { fetchMeiFileByFileName } from '@/services/dataBaseQueryServices';
 import { computed, ref, watch } from 'vue';
+import ScoreDetailModal from '@/components/modals/ScoreDetailModal.vue';
 
 defineOptions({
   name: 'PaginatedResults',
@@ -78,7 +79,9 @@ const props = defineProps({
 const verovio = useVerovioStore();
 const authors = useAuthorsStore();
 const paginatedScores = ref([]);
-const nbScores = computed(() => {
+const isModalOpen = ref(false);
+const selectedScore = ref({});
+let nbScores = computed(() => {
   return props.data.length;
 });
 const pageNb = ref(0);
@@ -108,6 +111,7 @@ function prevDataPageHandler() {
 
 watch(pageNb, () => {
   // always keep pageNb in range (1 <= pageNb <= nbPages)
+  if (pageNb.value === '') return; // ne rien faire si pageNb est vide
   if (pageNb.value < 1) {
     pageNb.value = 1;
   } else if (pageNb.value > nbPages.value) {
@@ -156,12 +160,14 @@ function LoadPageN() {
 
     fetchMeiFileByFileName(fileName, authors.selectedAuthorName).then((meiXML) => {
       // extract title
-      const title = extractTitleFromMeiXML(meiXML);
+      let { title, author, comment } = extractTitleAuthorComment(meiXML);
       item['title'] = title;
-
+      item['author'] = author;
+      item['comment'] = comment;
       paginatedScores.value.push(item);
       // remove title, author and comment that are overlapping each other and are not useful in the preview
-      meiXML = meiXML.replace(/<pgHead.*?<\/pgHead>/s, '');
+      meiXML = removePgHead(meiXML);
+      item['meiXML'] = meiXML; // store the meiXML in the item for later use in the modal
       verovio.ensureTkInitialized().then(() => {
         // parameters for rendering
         // same as in ejs version
@@ -190,6 +196,17 @@ function LoadPageN() {
     });
   });
 }
+
+// Gestion de la modal
+const openScoreDetail = (score) => {
+  selectedScore.value = score;
+  isModalOpen.value = true;
+};
+
+const closeModal = () => {
+  isModalOpen.value = false;
+  selectedScore.value = {};
+};
 </script>
 
 <style scoped>

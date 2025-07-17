@@ -44,6 +44,7 @@ onMounted(() => {
 
 /* For the selected / not selected label (Piano / Microphone) */
 .unselected-label {
+  color: black;
   padding: 5px;
 }
 .selected-label {

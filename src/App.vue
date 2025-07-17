@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <header-component />
+    <header-component class="sticky" />
     <div class="main-content"><router-view /><!-- Contenu de la page --></div>
     <footer-component />
   </div>
@@ -25,11 +25,13 @@ onMounted(() => {
 </script>
 
 <style>
+.stop-scroll {
+  overflow: hidden;
+}
+
 body {
   padding: 0;
   margin: 0;
-  overflow-x: hidden;
-  padding-top: 0; /* Ajuste en fonction de la hauteur de la navbar */
 }
 nav {
   background-color: #006485;
@@ -40,14 +42,12 @@ nav {
   justify-content: center;
   align-items: center;
 }
-.searchbar-box {
-  margin-top: 80px;
-  width: 100% !important;
-  justify-content: center;
-  align-items: center;
-  display: flex;
-}
 .main-content {
   display: block;
+}
+.sticky {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 </style>
