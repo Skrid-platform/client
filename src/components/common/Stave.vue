@@ -35,6 +35,10 @@ const staveRepr = StaveRepresentation.getInstance();
 const player = Player.getInstance();
 
 function keyListener(event) {
+  if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
+    // Ignore key events if the target is an input or textarea
+    return;
+  }
   //---Delete all
   if (event.key == 'Backspace' && event.ctrlKey) {
     staveRepr.clear_all_pattern();

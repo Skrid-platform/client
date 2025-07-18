@@ -350,14 +350,6 @@ function rhythmToleranteSearchButtonHandler() {
 
 onMounted(() => {
   authors.loadAuthors();
-  // lock keydown suppr only in fuzzy-options to prevent deletion of notes in melody
-  document.querySelectorAll('.fuzzy-options input').forEach((input) => {
-    input.addEventListener('keydown', (event) => {
-      if (event.key === 'Backspace') {
-        event.stopPropagation();
-      }
-    });
-  });
 });
 </script>
 
