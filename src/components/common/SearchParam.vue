@@ -241,8 +241,6 @@ const toggleSelectedButton = (button) => {
 };
 
 const showTooltip = async (event, text) => {
-  console.log(text);
-  console.log(event.pageX, event.pageY);
   tooltipText.value = text;
   tooltipVisible.value = true;
   await nextTick();
