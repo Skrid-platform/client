@@ -2,6 +2,7 @@
 
 ## General
 - Remove useless annotation in preview
+- Update the /help ("guide et astuces"): give the stave keybinds (backspace, ctrl-backspace)
 
 ## Bugs
 - svg are generated for each result and so process can break when viewing individual result on result page ;
