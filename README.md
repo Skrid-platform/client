@@ -44,12 +44,15 @@ The **frontend** (connecting the client and the backend) is maintained in a sepa
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Getting Started (development setup)
+The following instructions are to run the development server only.
+
+To deploy in production, see the [frontend's README](https://gitlab.inria.fr/skrid/frontend/-/blob/main/README.md).
 
 ### 1. Clone the repository
 ```bash
 git clone https://gitlab.inria.fr/skrid/client.git
-cd client
+cd client/
 ```
 
 ### 2. Install dependencies
@@ -57,7 +60,13 @@ cd client
 npm install
 ```
 
-### 3. Start the vue server (for development)
+### 3. Create the `.env` file
+Copy the example `.env` file and adjust the values:
+```bash
+cp .env.example .env
+```
+
+### 4. Start the vue server (for development)
 ```bash
 npm run dev
 ```
