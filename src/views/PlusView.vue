@@ -101,12 +101,4 @@ ul li {
   transition: opacity 1.5s ease-in-out;
   opacity: 1;
 }
-<<<<<<< HEAD
-.searchbar-box {
-  background-color: white;
-  color: black;
-  border-bottom: 0.5px solid aqua;
-}
-=======
->>>>>>> result
 </style>
