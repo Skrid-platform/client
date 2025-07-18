@@ -152,6 +152,9 @@
         </div>
       </div>
     </transition>
+    <div ref="tooltipDiv" v-if="tooltipVisible" class="tooltip-div">
+      <p>{{ tooltipText }}</p>
+    </div>
   </div>
 </template>
 
@@ -160,8 +163,9 @@ import StaveRepresentation from '@/lib/stave.js';
 import { fetchSearchResults } from '@/services/dataBaseQueryServices';
 import { createNotesQueryParam } from '@/services/dataManagerServices';
 import { useAuthorsStore } from '@/stores/authorsStore.ts';
+import { info_texts } from '@/constants/index.ts';
 
-import { onMounted, ref, watch } from 'vue';
+import { nextTick, onMounted, ref, watch } from 'vue';
 
 defineOptions({
   name: 'SearchParam',
@@ -171,6 +175,9 @@ const staveRepr = StaveRepresentation.getInstance();
 const authors = useAuthorsStore();
 const advancedOptionShow = ref(false); //flag for display advanced options or not
 const selectedButton = ref(''); // to highlight the selected button ('exact', 'pitch', 'rhythm' or '' when no button is selected)
+const tooltipVisible = ref(false);
+const tooltipText = ref('');
+const tooltipDiv = ref(null);
 
 //======== Options for search buttons ========//
 // checkbox
@@ -204,12 +211,47 @@ watch(rhythm_cb, (newValue) => {
   }
 });
 
-const toggleAdvancedOption = () => {
+const toggleAdvancedOption = async () => {
+  // Toggle the visibility of advanced options
   advancedOptionShow.value = !advancedOptionShow.value;
+  // initialise the tooltip listener if advanced options are shown
+
+  await nextTick();
+  
+  if (advancedOptionShow.value) {
+    Object.keys(info_texts).forEach(id => {
+      const elem = document.getElementById(id);
+      if (!elem) {console.warn('Element not found:', id);return;}; // Check if the element exists
+      elem.addEventListener('mousemove', (e) => showTooltip(e, info_texts[id]));
+      elem.addEventListener('mouseout', () => hideTooltip());
+    });
+  } else {
+    // remove the tooltip listener if advanced options are hidden
+    Object.keys(info_texts).forEach(id => {
+      const elem = document.getElementById(id);
+      if (!elem) {console.warn('Element not found:', id);return;}; // Check if the element exists
+      elem.removeEventListener('mousemove', (e) => showTooltip(e, info_texts[id]));
+      elem.removeEventListener('mouseout', () => hideTooltip());
+    });
+  }
 };
 
 const toggleSelectedButton = (button) => {
   selectedButton.value = button;
+};
+
+const showTooltip = async (event, text) => {
+  console.log(text);
+  console.log(event.pageX, event.pageY);
+  tooltipText.value = text;
+  tooltipVisible.value = true;
+  await nextTick();
+  tooltipDiv.value.style.left = `${event.pageX + 20}px`;
+  tooltipDiv.value.style.top = `${event.pageY - 30}px`; // ??? Apparament le header fait que le tooltip est un peu trop bas ???
+};
+
+const hideTooltip = () => {
+  tooltipVisible.value = false;
 };
 
 function searchButtonHandler() {
@@ -308,7 +350,6 @@ function rhythmToleranteSearchButtonHandler() {
 
 onMounted(() => {
   authors.loadAuthors();
-
   // lock keydown suppr only in fuzzy-options to prevent deletion of notes in melody
   document.querySelectorAll('.fuzzy-options input').forEach((input) => {
     input.addEventListener('keydown', (event) => {
@@ -373,10 +414,28 @@ onMounted(() => {
   padding: 10px;
   background-color: white;
   border: 1px solid #ccc;
-
   border-radius: 5px;
   max-width: 400px;
 }
+
+.tooltip-div {
+  position: absolute;
+  display: block;
+  z-index: 0;
+  color: black;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+}
+
+.tooltip-div p {
+  margin: 0;
+  padding: 10px;
+  font-size: 12px;
+  max-width: 300px;
+}
+
 
 .collapse-enter-active {
   overflow: hidden;
