@@ -4,12 +4,11 @@ import * as Tone from 'tone';
 interface ParsedNote {
   pitch: string;
   duration: string;
-  time: number;
   id: string;
 }
 
 /**
- * Composable pour la gestion de la lecture audio avec Tone.js
+ * Composable for audio playback management with Tone.js
  */
 export function useAudioPlayer() {
   const isPlayingAudio = ref(false);
@@ -22,7 +21,9 @@ export function useAudioPlayer() {
   let part: Tone.Part | null = null;
 
   /**
-   * Initialise Tone.js et crée un synthétiseur
+   * Initializes Tone.js and creates a synthesizer
+   * @returns {Promise<void>} A promise that resolves when Tone.js is ready
+   * @throws {Error} If Tone.js context cannot be started
    */
   const initializeTone = async () => {
     if (Tone.getContext().state !== 'running') {
@@ -35,7 +36,9 @@ export function useAudioPlayer() {
   };
 
   /**
-   * Parse le MEI XML pour extraire les notes et leurs informations
+   * Parses MEI XML to extract notes and their information
+   * @param {string} meiXML - The MEI XML content to parse
+   * @returns {ParsedNote[]} An array of parsed notes with pitch, duration and id
    */
   const parseMeiToNotes = (meiXML: string): ParsedNote[] => {
     const parser = new DOMParser();
@@ -51,16 +54,15 @@ export function useAudioPlayer() {
       const id = noteEl.getAttribute('xml:id');
 
       if (pitch && octave) {
-        // Convertir en notation Tone.js
+        // Convert to Tone.js pitch notation
         const tonePitch = `${pitch.toUpperCase()}${octave}`;
 
-        // Convertir la durée MEI en durée Tone.js
+        // Convert MEI duration to Tone.js duration
         const toneDuration = convertMeiDurationToTone(duration);
 
         parsedNotes.push({
           pitch: tonePitch,
           duration: toneDuration,
-          time: index * 0.5, // Timing basique, à améliorer
           id: id || `note-${index}`,
         });
       }
@@ -70,7 +72,9 @@ export function useAudioPlayer() {
   };
 
   /**
-   * Convertit une durée MEI en durée Tone.js
+   * Converts MEI duration to Tone.js duration
+   * @param {string} meiDuration - The MEI duration string
+   * @returns {string} The corresponding Tone.js duration
    */
   const convertMeiDurationToTone = (meiDuration: string): string => {
     const durationMap: Record<string, string> = {
@@ -86,7 +90,9 @@ export function useAudioPlayer() {
   };
 
   /**
-   * Lance la lecture de la partition
+   * Starts score playback
+   * @param {string} meiXML - The MEI XML content to play
+   * @param {number} tempo - The tempo for playback (default: 120 BPM
    */
   const playScore = async (meiXML: string, tempo: number = 120) => {
     if (isPausedAudio.value || isPlayingAudio.value) {
@@ -95,18 +101,18 @@ export function useAudioPlayer() {
     try {
       await initializeTone();
 
-      // Parser les notes du MEI
+      // Parse the notes from the MEI
       const parsedNotes = parseMeiToNotes(meiXML);
 
       if (parsedNotes.length === 0) {
-        console.warn('Aucune note trouvée dans le MEI');
+        console.warn('No notes found in the MEI');
         return;
       }
 
-      // Définir le tempo
+      // set the tempo
       Tone.getTransport().bpm.value = tempo;
 
-      // Créer les événements pour Tone.Part
+      // Create events for Tone.Part
       const events: Array<{ time: number; note: ParsedNote }> = [];
       let currentTime = 0;
 
@@ -116,54 +122,49 @@ export function useAudioPlayer() {
           note: note,
         });
 
-        // Calculer le temps pour la prochaine note basé sur la durée actuelle
+        // Calculate the time for the next note based on the current duration
         const noteDuration = Tone.Time(note.duration).toSeconds();
         currentTime += noteDuration;
       });
 
-      // Arrêter automatiquement à la fin
+      // Automatically stop at the end
       const lastEvent = events.length > 0 ? events[events.length - 1] : undefined;
       const totalDuration = lastEvent ? lastEvent.time + Tone.Time(lastEvent.note.duration).toSeconds() : 0;
-
-      /*
-      events.reduce((total, event) => {
-        return total + Tone.Time(event.note.duration).toSeconds();
-      }, 0);
-      */
       Tone.getTransport().scheduleOnce(() => {
         stopScore();
       }, totalDuration);
 
-      // Créer un Part avec les événements
+      // Create a Part with the events
       part = new Tone.Part((time, event) => {
-        // Jouer la note
+        // Play the note
         if (synth) {
           synth.triggerAttackRelease(event.note.pitch, event.note.duration, time);
         }
 
-        // Surligner la note si un callback est défini
+        // Highlight the note if a callback is defined
         if (highlightCallback) {
           Tone.getDraw().schedule(() => {
-            removeHighlightCallback?.(); // Retirer le surlignage précédent
-            highlightCallback?.(event.note.id); // Surligner la note actuelle
+            removeHighlightCallback?.(); // Remove the previous highlight
+            highlightCallback?.(event.note.id); // Highlight the current note
           }, time);
         }
       }, events);
 
-      // Démarrer la lecture
+      // Start playback
       part.start();
       Tone.getTransport().start();
 
+      // Update playback state
       isPlayingAudio.value = true;
       isPausedAudio.value = false;
       isStoppedAudio.value = false;
     } catch (error) {
-      console.error('Erreur lors de la lecture:', error);
+      console.error('Error during playback:', error);
     }
   };
 
   /**
-   * Met en pause la lecture
+   * Pauses playback
    */
   const pauseScore = () => {
     if (Tone.getTransport().state === 'started') {
@@ -175,7 +176,7 @@ export function useAudioPlayer() {
   };
 
   /**
-   * Reprend la lecture
+   * Resumes playback
    */
   const resumeScore = () => {
     if (Tone.getTransport().state === 'paused') {
@@ -187,7 +188,7 @@ export function useAudioPlayer() {
   };
 
   /**
-   * Arrête la lecture
+   * Stops playback
    */
   const stopScore = () => {
     if (part) {
@@ -209,14 +210,17 @@ export function useAudioPlayer() {
   };
 
   /**
-   * Met à jour le tempo
+   * Updates the tempo
+   * @param {number} newTempo - The new tempo to set
    */
   const updateTempo = (newTempo: number) => {
     Tone.getTransport().bpm.value = newTempo;
   };
 
   /**
-   * Définit le callback pour surligner les notes
+   * Sets the callbacks for note highlighting during playback
+   * @param highlight - Function to call for highlighting a note
+   * @param removeHighlight - Function to call for removing highlight
    */
   const setHighlightCallbacks = (highlight: (id: string) => void, removeHighlight: () => void) => {
     highlightCallback = highlight;
@@ -224,7 +228,9 @@ export function useAudioPlayer() {
   };
 
   /**
-   * Joue une note spécifique
+   * Plays a specific note
+   * @param {string} pitch - The pitch of the note to play
+   * @param {string} duration - The duration of the note (default: '4n')
    */
   const playNote = async (pitch: string, duration: string = '4n') => {
     await initializeTone();
@@ -233,7 +239,7 @@ export function useAudioPlayer() {
     }
   };
 
-  // Nettoyage lors de la destruction du composant
+  // Cleaning on Unmounted
   onUnmounted(() => {
     stopScore();
     if (synth) {

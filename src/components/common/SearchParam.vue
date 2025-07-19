@@ -19,9 +19,11 @@
 
     <h4 class="text-center">Sélectionnez le type de recherche</h4>
 
-    <!-- Button to start research -->
+    <!-- Buttons to start research -->
 
+    <!-- Exact Search Button -->
     <div class="search-buttons">
+      <!-- Exact Search Button -->
       <button
         @click="exactSearchButtonHandler()"
         :class="selectedButton == 'exact' ? 'selected' : ''"
@@ -30,6 +32,7 @@
       >
         Recherche exacte
       </button>
+      <!-- Pitch Tolerant Search Button -->
       <button
         @click="pitchToleranteSearchButtonHandler()"
         :class="selectedButton == 'pitch' ? 'selected' : ''"
@@ -39,6 +42,7 @@
         Recherche avec tolérance <br />
         sur la hauteur des notes
       </button>
+      <!-- Rhythm Tolerant Search Button -->
       <button
         @click="rhythmToleranteSearchButtonHandler()"
         :class="selectedButton == 'rhythm' ? 'selected' : ''"
@@ -48,13 +52,13 @@
         Recherche avec tolérance <br />
         sur le rythme
       </button>
-      <!--<button id="libre" type="button" class="btn text-white" style="background-color: #7ab6e0;">Recherche exploratoire</button>-->
     </div>
 
     <button id="optionToggleButton" class="btn btn-outline-secondary" type="button" @click="toggleAdvancedOption()">
       Options avancées
     </button>
 
+    <!-- Advanced Options -->
     <transition name="collapse">
       <div class="toggle-options" v-if="advancedOptionShow">
         <div class="general-options">
@@ -96,7 +100,6 @@
               v-model="pitch_dist"
               :disabled="!pitch_cb"
             />
-            <!-- <span class='tooltiptext'>Permet d'augmenter la tolérance sur la hauteur de note (en tons)</span> -->
           </label>
 
           <label class="tooltip-lb" id="duration-dist-lb">
@@ -111,7 +114,6 @@
               v-model="duration_factor"
               :disabled="!rhythm_cb"
             />
-            <!-- <span class='tooltiptext'>Permet d'augmenter la tolérance sur la durée des notes (coefficient multiplicateur).</span> -->
           </label>
 
           <label class="tooltip-lb" id="sequencing-dist-lb">
@@ -126,18 +128,16 @@
               v-model="duration_gap"
               :disabled="!rhythm_cb"
             />
-            <!-- <span class='tooltiptext'>Permet de sauter des notes (en durée : 1 pour pleine, 0.5 pour ronde, 0.25 pour croche, ...)</span> -->
           </label>
 
           <label class="tooltip-lb" id="alpha-lb">
             Alpha
             <input type="number" min="0" max="100" value="0" step="5" id="alpha-select" class="nb-select" v-model="alpha" />
             %
-            <!-- <span class='tooltiptext'>Permet de filtrer les résultats en retirant tous ceux qui ont un score inférieur à alpha.</span> -->
           </label>
 
           <hr />
-
+          <!-- Search with advanced fuzzy param -->
           <button
             @click="
               toggleSelectedButton('');
@@ -152,6 +152,7 @@
         </div>
       </div>
     </transition>
+    <!-- Div to display description of each advanced param -->
     <div ref="tooltipDiv" v-if="tooltipVisible" class="tooltip-div">
       <p>{{ tooltipText }}</p>
     </div>
@@ -214,9 +215,9 @@ watch(rhythm_cb, (newValue) => {
 const toggleAdvancedOption = async () => {
   // Toggle the visibility of advanced options
   advancedOptionShow.value = !advancedOptionShow.value;
-  // initialise the tooltip listener if advanced options are shown
+  // initialize the tooltip listener if advanced options are shown
 
-  await nextTick();
+  await nextTick(); // wait the tooltipDiv to be display and parse in the DOM
   
   if (advancedOptionShow.value) {
     Object.keys(info_texts).forEach(id => {
@@ -240,6 +241,9 @@ const toggleSelectedButton = (button) => {
   selectedButton.value = button;
 };
 
+/*
+ * Show tooltip with information text
+ */
 const showTooltip = async (event, text) => {
   tooltipText.value = text;
   tooltipVisible.value = true;
@@ -252,6 +256,12 @@ const hideTooltip = () => {
   tooltipVisible.value = false;
 };
 
+/**
+ * Handles the main search button click.
+ * - Validates search parameters
+ * - Emits an event to show paginated results
+ * - Fetches the search results and then emits data to paginated results component
+ */
 function searchButtonHandler() {
   // Check that melody is not empty
   if (staveRepr.melody.length == 0) {
@@ -295,6 +305,12 @@ function searchButtonHandler() {
   });
 }
 
+/**
+ * Handles exact search button click
+ * - Sets preset values for exact matching
+ * - Toggles the selected button
+ * - Calls the search button handler to perform the search
+ */
 function exactSearchButtonHandler() {
   // apply preset value for exact search
   pitch_cb.value = true;
@@ -312,6 +328,12 @@ function exactSearchButtonHandler() {
   searchButtonHandler();
 }
 
+/**
+ * Handles pitch tolerant search button click
+ * - Sets preset values for pitch-flexible matching
+ * - Toggles the selected button
+ * - Calls the search button handler to perform the search
+ */
 function pitchToleranteSearchButtonHandler() {
   // apply preset value for tolérante pitch search
   pitch_cb.value = true;
@@ -329,8 +351,14 @@ function pitchToleranteSearchButtonHandler() {
   searchButtonHandler();
 }
 
+/**
+ * Handles rhythm tolerant search button click
+ * - Sets preset values for rhythm-flexible matching
+ * - Toggles the selected button
+ * - Calls the search button handler to perform the search
+ */
 function rhythmToleranteSearchButtonHandler() {
-  // apply preset value for rythm tolerante search
+  // apply preset value for rhythm tolerante search
   pitch_cb.value = true;
   rhythm_cb.value = true;
   transposition_cb.value = true;

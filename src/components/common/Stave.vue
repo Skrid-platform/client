@@ -1,6 +1,9 @@
 <template>
   <div>
+    <!-- div to render the VexFlow -->
     <div id="music-score"></div>
+
+    <!-- Buttons to manage staveRepr.melody -->
     <div class="clear_buttons">
       <button @click="staveRepr.clear_all_pattern()" type="button" class="btn btn-info text-white">Supprimer tout</button>
       <button @click="staveRepr.remove_last_note()" type="button" class="btn btn-info text-white">
@@ -34,6 +37,10 @@ defineOptions({
 const staveRepr = StaveRepresentation.getInstance();
 const player = Player.getInstance();
 
+/**
+ * Handles keyboard events for stave interaction
+ * @param {KeyboardEvent} event - The keyboard event
+ */
 function keyListener(event) {
   if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
     // Ignore key events if the target is an input or textarea

@@ -1,7 +1,10 @@
 <template>
   <div class="paginated-results">
+
+    <!-- Navigation controls -->
     <div class="navigation">
-      <button id="csv-button" class="pagination-bt">Télécharger les résultats en CSV</button>
+      <!-- TO DO: add button to download results as CSV -->
+      <!-- <button @click="downloadCSV" id="csv-button" class="pagination-bt">Télécharger les résultats en CSV</button> -->
 
       <label id="score_nb_lb">Nombre de partitions : {{ nbScores }} </label>
       <button id="prevPage" class="pagination-bt" :disabled="pageNb === 1" @click="prevDataPageHandler()">Page précédente</button>
@@ -20,6 +23,7 @@
       <label id="nb_per_page_lb"> par page</label>
     </div>
 
+    <!-- Results container that display the scores -->
     <div class="results-container" id="results-container">
       <h3 v-if="props.loading" class="text-center">Chargement</h3>
       <h3 v-else-if="props.data.length == 0" class="text-center">Aucun résultat</h3>
@@ -31,6 +35,7 @@
       </div>
     </div>
 
+    <!-- Navigation controls at the bottom -->
     <div class="navigation" v-if="nbPages > 1">
       <button id="prevPage-bot" class="pagination-bt" :disabled="pageNb == 1" @click="prevDataPageHandler()">
         Page précédente
@@ -41,7 +46,7 @@
       </button>
     </div>
 
-    <!-- Modal de détail de la partition -->
+    <!-- Popup modal for score details -->
     <ScoreDetailModal
       :is-open="isModalOpen"
       :score-data="selectedScore"
@@ -92,6 +97,10 @@ const nbPages = computed(() => {
   return Math.ceil(nbScores.value / nbPerPage.value); // Calculate the number of pages needed
 });
 
+/**
+ * Handles the number of items per page selection
+ * @param {number|string} value - The number of items per page or '*' for all
+ */
 function nbPerPageHandler(value) {
   if (value === '*') {
     nbPerPage.value = nbScores.value;
@@ -101,17 +110,23 @@ function nbPerPageHandler(value) {
   LoadPageN();
 }
 
+/**
+ * Moves to the next page
+ */
 function nextDataPageHandler() {
   pageNb.value++;
 }
 
+/**
+ * Moves to the previous page
+ */
 function prevDataPageHandler() {
   pageNb.value--;
 }
 
 watch(pageNb, () => {
   // always keep pageNb in range (1 <= pageNb <= nbPages)
-  if (pageNb.value === '') return; // ne rien faire si pageNb est vide
+  if (pageNb.value === '') return; // do nothing if pageNb is empty
   if (pageNb.value < 1) {
     pageNb.value = 1;
   } else if (pageNb.value > nbPages.value) {
@@ -137,6 +152,9 @@ watch(
   },
 );
 
+/**
+ * Loads and renders the scores for the current page
+ */
 function LoadPageN() {
   // remove the previous scores
   paginatedScores.value = [];
@@ -159,7 +177,8 @@ function LoadPageN() {
     }
 
     fetchMeiFileByFileName(fileName, authors.selectedAuthorName).then((meiXML) => {
-      // extract title
+      // extract title, autho and comment from the mei 
+      // and memorize them to display it on result if needed
       let { title, author, comment } = extractTitleAuthorComment(meiXML);
       item['title'] = title;
       item['author'] = author;
@@ -197,7 +216,7 @@ function LoadPageN() {
   });
 }
 
-// Gestion de la modal
+// pop-up management
 const openScoreDetail = (score) => {
   selectedScore.value = score;
   isModalOpen.value = true;
@@ -221,18 +240,6 @@ const closeModal = () => {
 .navigation {
   text-align: right;
 }
-
-/* .paginated-result { */
-/*     flex: 0 0 20%; */
-/*     overflow: hidden; */
-/* } */
-
-/* .collections {
-    flex: 0 0 20%;
-    background-color: #62aadd;
-    padding: 0px;
-    font-size: 20px;
-} */
 
 .pagination-bt {
   border-radius: 5px;

@@ -49,7 +49,7 @@ defineOptions({
 const micRecorder = MicroRecorder.getInstance();
 
 /**
- * Start to record
+ * Starts recording audio from the microphone
  */
 function startRecording() {
   try {
@@ -64,7 +64,7 @@ function startRecording() {
 }
 
 /**
- * Stop recording
+ * Stops recording audio
  */
 function stopRecording() {
   console.log('Stopping recording');
@@ -72,7 +72,7 @@ function stopRecording() {
 }
 
 /**
- * Toggles the recording using the current state to determine the action.
+ * Toggles the recording using the current state to determine the action
  */
 function toggleRecording() {
   if (micRecorder.is_recording.value) {
@@ -83,8 +83,9 @@ function toggleRecording() {
 }
 
 /**
- * Manages event associated to key presses.
- * only to start / stop recording using space.
+ * Manages events associated to key presses.
+ * Only to start/stop recording using space.
+ * @param {KeyboardEvent} event - The keyboard event
  */
 function keyListener(event) {
   //---Ignore repeat key for all the following
@@ -108,7 +109,6 @@ onMounted(() => {
 .wrapper {
   padding: 35px 40px;
   border-radius: 20px;
-  /* background: #141414; */
   text-align: center;
 }
 
@@ -178,14 +178,11 @@ onMounted(() => {
 .tooltip-lb {
   position: relative;
   display: inline-block;
-  /* border-bottom: 1px dotted black; */
 }
 .tooltip-lb .tooltiptext {
   visibility: hidden;
   width: 150px;
-  /* background: #62aaddd0; */
   background: #18767ed0;
-  /* color: #000; */
   color: #fff;
   text-align: center;
   border-radius: 6px;

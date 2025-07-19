@@ -2,21 +2,24 @@ import { durationNote } from '@/constants/index.ts';
 import { nextTick } from 'vue';
 import { getGradientColor as getColor } from '@/services/colorService.ts';
 
-import type { Match, Note } from '@/types/api.ts';
+import type { DataResults, Match, Note } from '@/types/api.ts';
+import type { Stave, StaveNote } from 'vexflow';
 
 /**
  * Return the sub-array corresponding to the data from page `pageNb`.
- *
- * @param {*} data - the page data ;
- * @param {number} pageNb - the number of the page to get
- * @param {number} numberPerPage - the number of items per page. '*' for all.
- *
- * @return {json[]} data for the page `pageNb`.
+ * @param {DataResults[] | string[]} data - The page data
+ * @param {number} pageNb - The number of the page to get
+ * @param {number} numberPerPage - The number of items per page. '*' for all.
+ * @returns Data for the page `pageNb`
  */
-export function getPageN(data: any[], pageNb: number, numberPerPage: number) {
+export function getPageN(data: DataResults[] | string[], pageNb: number, numberPerPage: number) {
   return data.slice((pageNb - 1) * numberPerPage, pageNb * numberPerPage);
 }
 
+/**
+ * Colors the matches by applying gradient colors based on note degrees
+ * @param {Match[]} matches - Array of matches to color
+ */
 export function colorMatches(matches: Match[]) {
   // color the matches
   nextTick().then(() => {
@@ -38,13 +41,13 @@ export function colorMatches(matches: Match[]) {
 
 /**
  * Create the `notes` for the python script
- * @param {Array<StaveNote>} melody - the melody to convert to a query parameter ;
+ * @param {StaveNote[]} melody - the melody to convert to a query parameter ;
  * @param {boolean} ignore_pitch - if true, the pitch of the notes is ignored ;
  * @param {boolean} ignore_rhythm - if true, the rhythm of the notes is ignored ;
  *
  * @return {string} the notes query parameter, ready to be used in the python script.
  */
-export function createNotesQueryParam(melody: any, ignore_pitch: boolean, ignore_rhythm: boolean) {
+export function createNotesQueryParam(melody: StaveNote[], ignore_pitch: boolean, ignore_rhythm: boolean) {
   let notes = '[';
   for (let k = 0; k < melody.length; ++k) {
     notes += '([';
@@ -65,8 +68,9 @@ export function createNotesQueryParam(melody: any, ignore_pitch: boolean, ignore
     //---Add duration
     if (ignore_rhythm) notes += 'None, 0), ';
     else {
-      const dur = 1 / durationNote[melody[k].duration];
-      const dots = melody[k].dots || 0;
+      const duration = (melody[k] as any).duration; // as any because duration is protected by the type
+      const dur = 1 / durationNote[duration];
+      const dots = (melody[k] as any).dots || 0; // as any because dots is protected by the type
 
       notes += `${dur}, ${dots}), `;
     }
@@ -77,6 +81,11 @@ export function createNotesQueryParam(melody: any, ignore_pitch: boolean, ignore
   return notes;
 }
 
+/**
+ * Extracts the title from the MEI XML content
+ * @param {string} meiXML - The MEI file content
+ * @returns {string} The extracted title or 'Titre inconnu' if not found
+ */
 export function extractTitleFromMeiXML(meiXML: string): string {
   // Try to extract the title from the <pgHead> tag
   return (
@@ -93,6 +102,11 @@ export function extractTitleFromMeiXML(meiXML: string): string {
   );
 }
 
+/**
+ * Extracts the author from the MEI XML content
+ * @param {string} meiXML - The MEI file content
+ * @returns {string} The extracted author or empty string if not found
+ */
 export function extractAuthorFromMeiXML(meiXML: string): string {
   // Try to extract the author from the <pgHead> tag
   return (
@@ -109,6 +123,11 @@ export function extractAuthorFromMeiXML(meiXML: string): string {
   );
 }
 
+/**
+ * Extracts the comment from the MEI XML content
+ * @param {string} meiXML - The MEI file content
+ * @returns {string} The extracted comment or empty string if not found
+ */
 export function extractCommentFromMeiXML(meiXML: string): string {
   // Try to extract the comment from the <pgHead> tag
   return (
@@ -127,21 +146,21 @@ export function extractCommentFromMeiXML(meiXML: string): string {
 
 /**
  * Extract the title, author and comment from the MEI file
- * it avoid text overlapping when the title, author and comment are too long.
- * @param {string} meiXML - the MEI file content
- * @returns {object} the title, author and comment
+ * It avoids text overlapping when the title, author and comment are too long.
+ * @param {string} meiXML - The MEI file content
+ * @returns {Object<string, string>} containing the title, author and comment in format {title: string, author: string, comment: string}
  */
-export function extractTitleAuthorComment(meiXML: string): {title: string, author: string, comment: string} {
-    // extract title, author and comment
-    const title = extractTitleFromMeiXML(meiXML);
-    const author = extractAuthorFromMeiXML(meiXML);
-    const comment = extractCommentFromMeiXML(meiXML);
+export function extractTitleAuthorComment(meiXML: string): { title: string, author: string, comment: string } {
+  // extract title, author and comment
+  const title = extractTitleFromMeiXML(meiXML);
+  const author = extractAuthorFromMeiXML(meiXML);
+  const comment = extractCommentFromMeiXML(meiXML);
 
-    return {
-        title,
-        author,
-        comment
-    };
+  return {
+    title,
+    author,
+    comment
+  };
 }
 
 /**

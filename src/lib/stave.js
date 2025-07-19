@@ -27,9 +27,8 @@ class StaveRepresentation {
 
   /**
    * Construct the class
-   *
-   * @param {number} [width=450] - the width of the representation of the stave
-   * @param {number} [height=200] - the height of the representation of the stave
+   * @param {number} [width=450] - The width of the representation of the stave
+   * @param {number} [height=200] - The height of the representation of the stave
    */
   constructor(width = 450, height = 200) {
     this.melody = [];
@@ -41,10 +40,9 @@ class StaveRepresentation {
   /**
    * Returns the instance of the stave representation.
    * If it does not exist, creates a new one.
-   * @param {number} [width=450] - the width of the representation of the stave
-   * @param {number} [height=200] - the height of the representation of
-   *
-   * @returns {StaveRepresentation} - the instance of the stave representation.
+   * @param {number} [width=450] - The width of the representation of the stave
+   * @param {number} [height=200] - The height of the representation of the stave
+   * @returns {StaveRepresentation} - The instance of the stave representation
    */
   static getInstance(width = 450, height = 200) {
     if (this.#instance === null) {
@@ -54,13 +52,7 @@ class StaveRepresentation {
   }
 
   /**
-   * Initiates the HTML (vexflow).
-   * Also connects the buttons.
-   *
-   * @param {Player} player - the player associated to this stave
-   * @param {HTMLElement} playBt - the HTML button used to play / stop the melody. Here it is used to connect
-   * @param {HTMLElement} clearAllButton - the HTML button used to clear all the stave
-   * @param {HTMLElement} clearLastNoteButton - the HTML button used to clear the last note from the stave
+   * Connect the VexFlow to the HTML and initialize it
    */
   init() {
     this.#html_elem = document.getElementById('music-score');
@@ -117,10 +109,9 @@ class StaveRepresentation {
 
   /**
    * Displays the note to the stave and add it to `melody`.
-   *
-   * @param {string} note - the note name (e.g C/5, C#/4, with the '/') ;
-   * @param {string[]} keys - array of keys ;
-   * @param {string} duration - the note duration (w, h, q, 8, 16, 32, hd, qd, 8d, 16d, 32d).
+   * @param {string} note - The note name (e.g C/5, C#/4, with the '/')
+   * @param {string[]} keys - Array of keys
+   * @param {string} duration - The note duration (w, h, q, 8, 16, 32, hd, qd, 8d, 16d, 32d)
    */
   displayNote(note, keys, duration) {
     let display_note;
@@ -155,8 +146,7 @@ class StaveRepresentation {
 
   /**
    * Changes the last note on the stave for one with the same pitch, but with a different rhythm.
-   *
-   * @param {*} newRhythm - the new wanted rhythm.
+   * @param {string} newRhythm - The new wanted rhythm
    */
   changeLastNoteRhythm(newRhythm) {
     // If there is no note to modify, abort
@@ -174,7 +164,7 @@ class StaveRepresentation {
   }
 
   /**
-   * Remove from the melody array all the inserted note and clear the stave as well
+   * Remove from the melody array all the inserted notes and clear the stave as well
    */
   clear_all_pattern() {
     this.melody = [];

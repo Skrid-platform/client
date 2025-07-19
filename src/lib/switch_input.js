@@ -21,7 +21,7 @@ class SwitchInput {
 
   /**
    * Returns the singleton instance of SwitchInput.
-   * @returns {SwitchInput} - the singleton instance of SwitchInput.
+   * @returns {SwitchInput} - The singleton instance of SwitchInput
    */
   static getInstance() {
     if (SwitchInput.#instance === null) {

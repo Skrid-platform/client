@@ -40,7 +40,7 @@ class MicroRecorder {
 
   /**
    * Returns the singleton instance of MicroRecorder.
-   * @returns {MicroRecorder} - the singleton instance of MicroRecorder.
+   * @returns {MicroRecorder} - The singleton instance of MicroRecorder
    */
   static getInstance() {
     if (MicroRecorder.#instance === null) {
@@ -76,7 +76,6 @@ class MicroRecorder {
 
   /**
    * Starts the recording.
-   *
    * It also clears the stave before recording.
    * Does nothing if there is already a recording in progress.
    * Always wrap in a try / catch block to catch potential microphone access errors.
@@ -97,7 +96,6 @@ class MicroRecorder {
 
   /**
    * Stops the recording.
-   *
    * Does nothing if there is no recording in progress.
    */
   stopRecording() {
@@ -110,8 +108,7 @@ class MicroRecorder {
   /**
    * Uses `this.convertAudioToNotes` to get the notes from the blob, and display them onto the
    * stave.
-   *
-   * @param {Blob} blob - the blob containing the recorded audio
+   * @param {Blob} blob - The blob containing the recorded audio
    */
   addNotesToStave(blob) {
     this.convertAudioToNotes(blob).then((notes) => {
@@ -138,10 +135,8 @@ class MicroRecorder {
 
   /**
    * Send the recorded audio file to the backend in order to convert it to music notes (using `/convert-recording`).
-   *
-   * @param {Blob} blob - the recorded audio blob.
-   *
-   * @returns {Promise} the notes
+   * @param {Blob} blob - The recorded audio blob
+   * @returns {Promise} The notes
    */
   async convertAudioToNotes(blob) {
     const formData = new FormData();

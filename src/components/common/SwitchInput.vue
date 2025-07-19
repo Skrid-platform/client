@@ -21,11 +21,6 @@ defineOptions({
 
 const switchInput = SwitchInput.getInstance();
 
-// Init
-onMounted(() => {
-  // document.addEventListener('keydown', keyListener);
-  // document.addEventListener('keyup', keyListener);
-});
 </script>
 
 <style scoped>

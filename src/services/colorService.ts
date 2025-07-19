@@ -1,35 +1,35 @@
 /**
- * Service pour la gestion des couleurs de satisfaction
+ * Service for satisfaction color management
  */
 
 /**
- * Retourne une couleur interpolée entre le rouge et le vert selon le degré de satisfaction
- * @param degree - Degré de satisfaction entre 0 et 1
- * @returns Couleur RGB correspondante
+ * Returns an interpolated color between red and green based on satisfaction degree
+ * @param {number} degree - Satisfaction degree between 0 and 1
+ * @returns {string} Corresponding RGB color in format 'rgb(r,g,b)'
  */
 export function getGradientColor(degree: number): string {
   const red = { r: 255, g: 0, b: 0 };
   const dark_yellow = { r: 215, g: 215, b: 0 };
   const dark_green = { r: 0, g: 179, b: 0 };
 
-  // Normaliser le degré entre 0 et 1
+  // Normalize the degree between 0 and 1
   degree = Math.max(0, Math.min(1, degree));
 
   if (degree > 0.5) {
-    // Interpolation entre jaune et vert (0.5 à 1)
+    // Interpolation between yellow and green (0.5 to 1)
     return interpolateBetweenColors(dark_green, dark_yellow, 200 * (degree - 0.5));
   } else {
-    // Interpolation entre rouge et jaune (0 à 0.5)
+    // Interpolation between red and yellow (0 à 0.5)
     return interpolateBetweenColors(dark_yellow, red, 200 * degree);
   }
 }
 
 /**
- * Interpole entre deux couleurs
- * @param fromColor - Couleur de départ
- * @param toColor - Couleur d'arrivée
- * @param percent - Pourcentage d'interpolation
- * @returns Couleur interpolée
+ * Interpolates between two colors
+ * @param {Object<string, number>} fromColor - Starting color in format { r: number, g: number, b: number }
+ * @param {Object<string, number>} toColor - Ending color in format { r: number, g: number, b: number }
+ * @param {number} percent - Interpolation percentage
+ * @returns {string} Interpolated color in format 'rgb(r,g,b)'
  */
 function interpolateBetweenColors(
   fromColor: { r: number; g: number; b: number },
@@ -42,20 +42,4 @@ function interpolateBetweenColors(
   const b = Math.round(toColor.b + (fromColor.b - toColor.b) * delta);
 
   return `rgb(${r}, ${g}, ${b})`;
-}
-
-/**
- * Génère une palette de couleurs pour l'échelle de satisfaction
- * @param steps - Nombre d'étapes dans la palette
- * @returns Array de couleurs RGB
- */
-export function generateColorPalette(steps: number = 10): string[] {
-  const colors: string[] = [];
-
-  for (let i = 0; i < steps; i++) {
-    const degree = i / (steps - 1);
-    colors.push(getGradientColor(degree));
-  }
-
-  return colors;
 }

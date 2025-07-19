@@ -226,13 +226,6 @@
           <img src="/notes_pics/32.png" height="50px" alt="32-th" />
         </button>
       </div>
-
-      <!-- <div class='qwerty-switch'>
-        <label class='white-label'>
-          <input type='checkbox' id='qwerty-checkbox'>
-          Qwerty
-        </label>
-      </div> -->
     </div>
   </div>
 </template>
@@ -258,12 +251,11 @@ watch(volume, (newVolume) => {
 });
 
 const currently_played_notes = {}; // Object to keep track of currently played notes
-
 let isAzertyMapping = true; // Default keyboard mapping = azerty
+
 /**
  * Changes the current octave
- *
- * @param {number} diff - the number of octaves to change (e.g +1, -1, ...)
+ * @param {number} diff - The number of octaves to change (e.g +1, -1, ...)
  */
 function changeOctave(diff) {
   octave.value += diff;
@@ -283,17 +275,18 @@ function showHideKeys() {
   pianoKeys.forEach((key) => key.classList.toggle('hide'));
 }
 
+/**
+ * Toggles between AZERTY and QWERTY keyboard mapping
+ */
 function toggleKeyboardMapping() {
   isAzertyMapping = !isAzertyMapping;
 }
 
 /**
  * Manages when a piano key is released.
- *
- * It gets the duration, adds the note to `melody`, and display the note.
- *
- * @param {string} note - the note name (e.g C/5, C#/4, with the '/')
- * @param {string} [key_id=null] - the html `data-key` field. If null, uses `note_arr` instead.
+ * It gets the duration, adds the note to `melody`, and displays the note.
+ * @param {string} note - The note name (e.g C/5, C#/4, with the '/')
+ * @param {string} [key_id=null] - The html `data-key` field. If null, uses `note_arr` instead.
  */
 function keyUp(note, key_id = null) {
   const note_arr = note.replace('/', '');
@@ -350,11 +343,9 @@ function keyUp(note, key_id = null) {
 
 /**
  * Manages when a piano key is pressed down.
- *
  * It starts a timer and plays the note.
- *
- * @param {string} note - the note name (e.g C/5, C#/4, or C5, C#4, ...)
- * @param {string} [key_id=null] - the html `data-key` field. If null, uses `note` instead.
+ * @param {string} note - The note name (e.g C/5, C#/4, or C5, C#4, ...)
+ * @param {string} [key_id=null] - The html `data-key` field. If null, uses `note` instead.
  */
 function keyDown(note, key_id = null) {
   note = note.replace('/', '');
@@ -370,15 +361,12 @@ function keyDown(note, key_id = null) {
 
   const clickedKey = document.querySelector(`[data-key="${key_id}"]`); // getting clicked key element
   clickedKey.classList.add('active');
-  // Removing active class after 150 ms from the clicked key element
-  // setTimeout(() => {
-  //     clickedKey.classList.remove("active");
-  // }, 150);
 }
 
 /**
- * Manages event associated to key presses.
- * only for the piano keys and the silence. (melody management is in stave.vue)
+ * Manages events associated to key presses.
+ * Only for the piano keys and the silence. (melody management is in stave.vue)
+ * @param {KeyboardEvent} event - The keyboard event
  */
 function keyListener(event) {
   // change octave with '-' and '+' keys
@@ -534,8 +522,6 @@ header input {
   cursor: pointer;
   user-select: none;
   position: relative;
-  /* text-transform: uppercase; */
-  /* writing-mode:sideways-lr; */
   height: 70px;
   width: 230px;
   border-radius: 8px;

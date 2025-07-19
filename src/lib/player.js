@@ -44,8 +44,8 @@ class Player {
 
   /**
    * Returns the singleton instance of Player.
-   * @returns {Player} - the singleton instance of Player.
-   * */
+   * @returns {Player} - The singleton instance of Player
+   */
   static getInstance() {
     if (Player.#instance === null) {
       Player.#instance = new Player();
@@ -54,10 +54,9 @@ class Player {
   }
   /**
    * Plays the sound of the button that has been pressed
-   *
-   * @param {string} note - the note to play (format example : C#4, C4)
-   * @param {Audio} [audio=null] - if not null, use this audio to make the sound
-   * */
+   * @param {string} note - The note to play (format example : C#4, C4)
+   * @param {Audio} [audio=null] - If not null, use this audio to make the sound
+   */
   playTune(note, audio = null) {
     if (note == 'r') return;
 
@@ -91,9 +90,8 @@ class Player {
 
   /**
    * Stops the sound for the given note, with a fade out.
-   *
-   * @param {string} note - the note to stop playing (format example : C#/4, C/4)
-   * @param {Audio} [audio=null] - if not null, use this audio to stop the sound.
+   * @param {string} note - The note to stop playing (format example : C#/4, C/4)
+   * @param {Audio} [audio=null] - If not null, use this audio to stop the sound
    */
   stopTune(note, audio = null) {
     if (note == 'r') return;
@@ -120,9 +118,8 @@ class Player {
 
   /**
    * Plays a note and stop after the given rhythm.
-   *
-   * @param {string} note - the note (pitch) to play (e.g C#/4) ;
-   * @param {string} rhythm - the rhythm of the note (e.g h, 8d, ...)
+   * @param {string} note - The note (pitch) to play (e.g C#/4)
+   * @param {string} rhythm - The rhythm of the note (e.g h, 8d, ...)
    */
   playNoteWithRhythm(note, rhythm) {
     let audio = new Audio();
@@ -142,19 +139,17 @@ class Player {
 
   /**
    * Wait `ms` ms.
-   *
-   * @param {number} ms - the time to wait, in ms.
+   * @param {number} ms - The time to wait, in ms
+   * @private
    */
   #sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   /**
-   * Plays / stop the melody from the `melody` global array.
-   *
+   * Plays/stops the melody from the `melody` global array.
    * If the melody is already playing, it stops it. Otherwise, it plays it.
-   *
-   * @param {Array} melody - the `melody` array from {@linkcode StaveRepresentation}
+   * @param {Array} melody - The `melody` array from {@linkcode StaveRepresentation}
    */
   async playMelody(melody) {
     if (melody.length == 0) {
@@ -190,8 +185,7 @@ class Player {
 
   /**
    * Getter for the volume attribute
-   *
-   * @returns {number} the volume, between 0 and 1.
+   * @returns {number} The volume, between 0 and 1
    */
   getVolume() {
     return this.#volume;
@@ -199,8 +193,7 @@ class Player {
 
   /**
    * Sets the volume of the audio.
-   * Also change the volume of all currently played notes.
-   * @param {number} volume
+   * @param {number} volume - The volume value between 0 and 1
    */
   setVolume(volume) {
     if (volume < 0 || volume > 1) {

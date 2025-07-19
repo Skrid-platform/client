@@ -3,8 +3,7 @@ import api from './axios.ts';
 
 /**
  * Fetches the list of authors from the server.
- *
- * @returns {Promise<string[]>} A promise that resolves to an array of authors.
+ * @returns {Promise<string[]>} A promise that resolves to an array of authors
  */
 export async function fetchAuthors() {
   try {
@@ -18,7 +17,6 @@ export async function fetchAuthors() {
 
 /**
  * Fetches all the scores from a specific collection by the given author.
- *
  * @param {string} author - The name of the author to filter by.
  * @returns {Promise<Object>} A promise that resolves to the collection data for the specified author.
  */
@@ -34,10 +32,10 @@ export async function fetchCollectionScoresNamesByAuthor(author: string) {
 
 /**
  * Fetches a MEI file by its name and the author's name.
- * @param {string} name - The name of the MEI file to fetch.
- * @param {string} authorName - The name of the author of the MEI file.
- * @returns {Promise<Object>} A promise that resolves to the MEI file data.
- * */
+ * @param {string} fileName - The name of the MEI file to fetch
+ * @param {string} authorName - The name of the author of the MEI file
+ * @returns {Promise<Object>} A promise that resolves to the MEI file data
+ */
 export async function fetchMeiFileByFileName(fileName: string, authorName: string) {
   const author = authorName.replace(/ /g, '-');
   try {
@@ -51,7 +49,6 @@ export async function fetchMeiFileByFileName(fileName: string, authorName: strin
 
 /**
  * Fetches fuzzy query based on the provided data.
- *
  * @param {SearchParams} data - The data to be sent in the request body.
  * @returns {Promise<Object>} A promise that resolves to the query results.
  */

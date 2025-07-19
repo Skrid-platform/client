@@ -80,6 +80,7 @@
 </template>
 
 <script setup>
+import { Match, Note } from '@/types/api.ts'
 import { ref, watch, onMounted, onUnmounted, nextTick, computed } from 'vue';
 import { useVerovioStore } from '@/stores/verovioStore';
 import { useAudioPlayer } from '@/composables/useAudioPlayer';
@@ -116,7 +117,7 @@ const hoveredNote = ref({});
 const isNoteInfoShown = ref(false);
 const tooltipDiv = ref(null);
 
-// Composable pour la gestion audio
+// Composable for audio playback
 const {
   playScore,
   resumeScore,
@@ -129,7 +130,12 @@ const {
   setHighlightCallbacks,
 } = useAudioPlayer();
 
-// Charger la partition complète
+/**
+ * Renders the score using Verovio.
+ * - generates the SVG representation of the score
+ * - binds hover events to display notes information
+ * - sets up the initial highlighting
+ */
 const renderScore = async () => {
   // Rendre la partition avec Verovio
   await verovio.ensureTkInitialized();
@@ -146,16 +152,20 @@ const renderScore = async () => {
   verovio.tk.loadData(props.scoreData.meiXML);
   scoreSvg.value = verovio.tk.renderToSVG(1);
 
+  
   await nextTick();
-  // Appliquer le surlignage initial
-  refreshHighlighting();
-
-  await nextTick();
-
   // add hover effect on matches
   initNoteHoverInfo();
+
+  await nextTick();
+  // apply the initial highlighting
+  refreshHighlighting();
+
 };
 
+/**
+ * Binds hover events to display notes information in the SVG.
+ */
 function initNoteHoverInfo() {
   if (!svgContainer.value) return;
 
@@ -179,15 +189,16 @@ function initNoteHoverInfo() {
 }
 
 /**
- * Handles when the note is hovered, and displays the div to the right place.
+ * Handles the note hover event and displays the info tooltip at the appropriate position.
  *
- * If there are multiple matches over the same note, it only shows the one with the smaller `match_x` index (corresponding to the one with the better score, which will correspond to the color shown, as the better matches are shown in the first layer).
+ * If multiple matches exist for the same note, only the one with the smallest `match_x` index is shown
+ * (corresponding to the best match, and thus the displayed color, since the best matches are rendered on top).
  *
- * @param {MouseEvent} event - the mouse event that triggered the hover;
- * @param {Object} match - the match object containing the overall degree and notes;
- * @param {number} index - the index of the match in the matches array;
- * @param {Object} note - the note object containing its id and satisfaction degrees;
- * @returns {Promise<void>} - a promise that resolves when the tooltip is displayed.
+ * @param {MouseEvent} event - Mouse event that triggered the hover.
+ * @param {Match} match_param - Match object containing the overall degree and associated notes.
+ * @param {number} index_param - Index of the match in the matches array.
+ * @param {Note} note - Note object containing its ID and satisfaction degrees.
+ * @returns {Promise<void>} - Promise resolved when the tooltip is displayed.
  */
 async function showNoteInfo(event, match_param, index_param, note) {
   const sortedSelectedMatches = selectedMatchIndices.value.sort((a, b) => a.index - b.index);
@@ -215,21 +226,24 @@ async function showNoteInfo(event, match_param, index_param, note) {
   tooltipDiv.value.style.left = `${event.pageX + 10}px`;
 }
 
-// Rafraîchir le surlignage selon les matches sélectionnés
+/**
+ * Refreshes the highlighting of the notes based on the selected matches.
+ * It clears all existing highlights and applies new ones based on the selected matches.
+ */
 const refreshHighlighting = async () => {
   await nextTick();
 
-  // Effacer tous les surlignages existants
+  // Clear all existing highlights
   clearAllHighlighting();
 
   if (!props.scoreData.matches || selectedMatchIndices.value.length === 0) {
     return;
   }
 
-  // La liste des matches est déjà triée, donc on peut juste la renverser
+  // The list of matches is already sorted, so we can just reverse it
   const sortedSelectedMatches = selectedMatchIndices.value.sort((a, b) => b.index - a.index);
 
-  // Appliquer le surlignage dans l'ordre (le meilleur score écrasera les autres)
+  // Apply highlighting in order (the best score will overwrite the others)
   sortedSelectedMatches.forEach(({ match, index }) => {
     if (match.notes) {
       match.notes.forEach((note) => {
@@ -243,7 +257,9 @@ const refreshHighlighting = async () => {
   });
 };
 
-// Effacer tous les surlignages
+/*
+ * Clears all highlighting from the notes in the SVG.
+ */
 const clearAllHighlighting = () => {
   if (!svgContainer.value) return;
   const noteElements = svgContainer.value.querySelectorAll('.notehead');
@@ -252,13 +268,19 @@ const clearAllHighlighting = () => {
   });
 };
 
-// Sélectionner tous les matches
+/*
+ * Selects all matches and refreshes the highlighting.
+ * It sets the selectedMatchIndices to all matches in the scoreData.
+ */
 const selectAllMatches = () => {
   selectedMatchIndices.value = props.scoreData.matches?.map((match, index) => ({ match, index })) || [];
   refreshHighlighting();
 };
 
-// Désélectionner tous les matches
+/*
+ * Deselects all matches and refreshes the highlighting.
+ * It clears the selectedMatchIndices and updates the highlighting.
+ */
 const deselectAllMatches = () => {
   selectedMatchIndices.value = [];
   refreshHighlighting();
