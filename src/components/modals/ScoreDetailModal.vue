@@ -7,7 +7,7 @@
       </div>
 
       <div class="modal-body">
-        <!-- Contrôles de lecture -->
+        <!-- Playback controls -->
         <div class="playback-controls">
           <button @click="togglePlayback" class="play-button">
             {{ playStatus }}
@@ -20,7 +20,7 @@
         </div>
 
         <div class="score-details">
-          <!-- Affichage de la partition -->
+          <!-- Div to display score -->
           <div class="score-display">
             <div v-html="scoreSvg" class="svg-container" ref="svgContainer"></div>
             <div class="score-footer">
@@ -30,8 +30,10 @@
               </p>
             </div>
           </div>
+
+          <!-- Matches details -->
           <div v-if="scoreData.matches && scoreData.matches.length > 0" class="results-details">
-            <!-- Échelle de couleur -->
+            <!-- Satisfaction scale -->
             <div class="color-scale">
               <h3>Échelle de satisfaction</h3>
               <div class="color-gradient">
@@ -44,7 +46,7 @@
               </div>
             </div>
 
-            <!-- Contrôles de sélection des résultats -->
+            <!-- Results selection -->
             <div class="match-controls">
               <h3>Résultats de recherche</h3>
               <button @click="selectAllMatches" class="control-button">Tout sélectionner</button>
@@ -67,6 +69,8 @@
         </div>
       </div>
     </div>
+
+    <!-- Tooltip div to display note information on hover -->
     <div class="note-tooltip" ref="tooltipDiv" v-if="isNoteInfoShown">
       <div class="note-info">
         <p>Résultat numéro: {{ hoveredNote.id }}</p>
@@ -80,7 +84,6 @@
 </template>
 
 <script setup>
-import { Match, Note } from '@/types/api.ts'
 import { ref, watch, onMounted, onUnmounted, nextTick, computed } from 'vue';
 import { useVerovioStore } from '@/stores/verovioStore';
 import { useAudioPlayer } from '@/composables/useAudioPlayer';
@@ -286,9 +289,11 @@ const deselectAllMatches = () => {
   refreshHighlighting();
 };
 
-// Surligner une note pendant la lecture
+/*
+ * Highlights the current playing note during playback.
+ */
 const highlightCurrentPlayingNote = (noteId) => {
-  // Surligner la note actuelle
+  // Highlight the current note
   if (!svgContainer.value) return;
   const currentNote = svgContainer.value.querySelector(`#${noteId}`);
   if (currentNote) {
@@ -296,14 +301,16 @@ const highlightCurrentPlayingNote = (noteId) => {
   }
 };
 
-// Effacer le surlignage précédent lors de la lecture
+/*
+ * Removes the highlight from the previously playing note.
+ */
 const removeHighlightPreviousPlayingNote = () => {
   if (!svgContainer.value) return;
   const highlighted = svgContainer.value.querySelectorAll('.currently-playing');
   highlighted.forEach((el) => el.classList.remove('currently-playing'));
 };
 
-// Gestion de la lecture
+// Toggle playback state
 const togglePlayback = async () => {
   if (isPlayingAudio.value) {
     pauseScore();
@@ -323,7 +330,6 @@ const updateTempo = () => {
   updateAudioTempo(tempo.value);
 };
 
-// Gestion de la modal
 const closeModal = () => {
   stopPlayback();
   emit('close');
@@ -335,7 +341,7 @@ const handleOverlayClick = (event) => {
   }
 };
 
-// when the modal is opened, load the full score and set up watchers
+// when the modal is opened, load the full score
 watch(
   () => props.isOpen,
   (newVal) => {
@@ -350,7 +356,8 @@ watch(
   }
 );
 
-// Configuration du callback pour le surlignage pendant la lecture
+// Set the highlight callbacks for playback
+// needed by audioPlayer to highlight current playing note
 onMounted(() => {
   setHighlightCallbacks(highlightCurrentPlayingNote, removeHighlightPreviousPlayingNote);
 });

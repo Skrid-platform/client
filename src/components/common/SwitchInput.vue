@@ -1,26 +1,30 @@
 <template>
   <div class="wrapper">
-    <label class="unselected-label" :class="{ 'selected-label': switchInput.isPianoSelected() }"> Piano </label>
+    <label class="label" :class="{ 'selected': props.pianoSelected }"> Piano </label>
 
     <label class="switch">
-      <input type="checkbox" @change="switchInput.toggle" />
+      <input type="checkbox" @change="emit('toggle')" />
       <span class="slider round"></span>
     </label>
 
-    <label class="unselected-label" :class="{ 'selected-label': switchInput.isMicrophoneSelected() }"> Microphone </label>
+    <label class="label" :class="{ 'selected': !props.pianoSelected }"> Microphone </label>
   </div>
 </template>
 
 <script setup>
-import SwitchInput from '@/lib/switch_input.js';
-import { onMounted, ref, watch } from 'vue';
 
 defineOptions({
   name: 'SwitchInput',
 });
 
-const switchInput = SwitchInput.getInstance();
+let props = defineProps({
+  pianoSelected: {
+    type: Boolean,
+    default: true,
+  },
+});
 
+let emit = defineEmits(['toggle']);
 </script>
 
 <style scoped>
@@ -38,11 +42,11 @@ const switchInput = SwitchInput.getInstance();
 }
 
 /* For the selected / not selected label (Piano / Microphone) */
-.unselected-label {
+.label {
   color: black;
   padding: 5px;
 }
-.selected-label {
+.selected {
   text-decoration: underline;
   text-decoration-color: #7ab6e0;
   text-decoration-thickness: 3px;
@@ -88,10 +92,6 @@ const switchInput = SwitchInput.getInstance();
   background-color: white;
   -webkit-transition: 0.4s;
   transition: 0.4s;
-}
-
-input:checked + .slider {
-  /* background-color: #2196F3; */
 }
 
 input:focus + .slider {

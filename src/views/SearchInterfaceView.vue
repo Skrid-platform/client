@@ -3,9 +3,9 @@
     <div class="search-pattern">
       <stave></stave>
 
-      <switch-input></switch-input>
+      <switch-input :piano-selected="pianoSelected" @toggle="pianoSelected = !pianoSelected"></switch-input>
 
-      <keyboard v-if="switchInput.piano_selected.value"></keyboard>
+      <keyboard v-if="pianoSelected"></keyboard>
       <micro-recorder v-else></micro-recorder>
 
       <search-param @receiveData="getData" @showPaginatedResult="showPaginatedResults()"></search-param>
@@ -22,19 +22,17 @@ import MicroRecorder from '@/components/common/MicroRecorder.vue';
 import SearchParam from '@/components/common/SearchParam.vue';
 import PaginatedResults from '@/components/common/PaginatedResults.vue';
 
-import SwitchInputClass from '@/lib/switch_input.js';
-
 import { ref } from 'vue';
 
 defineOptions({
   name: 'SearchInterfaceView',
 });
 
-const switchInput = SwitchInputClass.getInstance();
-
-const paginatedIsShown = ref(false);
-const searchResults = ref([]);
-const resultsIsLoading = ref(false);
+const paginatedIsShown = ref(false); // no search initialy done so paginated results are not shown
+const searchResults = ref([]); // this will contain the results from SearchParam component
+const resultsIsLoading = ref(false); // this will be set to true when results are being fetched
+// and set to false when results are received
+const pianoSelected = ref(true); // piano is shown first
 
 function showPaginatedResults() {
   // This function is called when the SearchParam start a search
