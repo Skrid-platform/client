@@ -155,7 +155,6 @@ const renderScore = async () => {
   verovio.tk.loadData(props.scoreData.meiXML);
   scoreSvg.value = verovio.tk.renderToSVG(1);
 
-  
   await nextTick();
   // add hover effect on matches
   initNoteHoverInfo();
@@ -163,7 +162,6 @@ const renderScore = async () => {
   await nextTick();
   // apply the initial highlighting
   refreshHighlighting();
-
 };
 
 /**
@@ -214,7 +212,6 @@ async function showNoteInfo(event, match_param, index_param, note) {
     if (sortedSelectedMatches[k].match.notes.findIndex((n) => n.id === note.id) !== -1) return;
   }
 
-  console.log('here after for in show note')
   // If still here, finally display the box
   hoveredNote.value = {
     id: index_param + 1, // +1 to match the index in the UI
@@ -353,7 +350,7 @@ watch(
       stopPlayback();
       document.getElementById('app').classList.remove('stop-scroll');
     }
-  }
+  },
 );
 
 // Set the highlight callbacks for playback

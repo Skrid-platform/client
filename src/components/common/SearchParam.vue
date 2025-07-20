@@ -218,19 +218,25 @@ const toggleAdvancedOption = async () => {
   // initialize the tooltip listener if advanced options are shown
 
   await nextTick(); // wait the tooltipDiv to be display and parse in the DOM
-  
+
   if (advancedOptionShow.value) {
-    Object.keys(info_texts).forEach(id => {
+    Object.keys(info_texts).forEach((id) => {
       const elem = document.getElementById(id);
-      if (!elem) {console.warn('Element not found:', id);return;}; // Check if the element exists
+      if (!elem) {
+        console.warn('Element not found:', id);
+        return;
+      } // Check if the element exists
       elem.addEventListener('mousemove', (e) => showTooltip(e, info_texts[id]));
       elem.addEventListener('mouseout', () => hideTooltip());
     });
   } else {
     // remove the tooltip listener if advanced options are hidden
-    Object.keys(info_texts).forEach(id => {
+    Object.keys(info_texts).forEach((id) => {
       const elem = document.getElementById(id);
-      if (!elem) {console.warn('Element not found:', id);return;}; // Check if the element exists
+      if (!elem) {
+        console.warn('Element not found:', id);
+        return;
+      } // Check if the element exists
       elem.removeEventListener('mousemove', (e) => showTooltip(e, info_texts[id]));
       elem.removeEventListener('mouseout', () => hideTooltip());
     });
@@ -453,7 +459,6 @@ onMounted(() => {
   font-size: 12px;
   max-width: 300px;
 }
-
 
 .collapse-enter-active {
   overflow: hidden;

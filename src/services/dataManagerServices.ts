@@ -150,7 +150,7 @@ export function extractCommentFromMeiXML(meiXML: string): string {
  * @param {string} meiXML - The MEI file content
  * @returns {Object<string, string>} containing the title, author and comment in format {title: string, author: string, comment: string}
  */
-export function extractTitleAuthorComment(meiXML: string): { title: string, author: string, comment: string } {
+export function extractTitleAuthorComment(meiXML: string): { title: string; author: string; comment: string } {
   // extract title, author and comment
   const title = extractTitleFromMeiXML(meiXML);
   const author = extractAuthorFromMeiXML(meiXML);
@@ -159,7 +159,7 @@ export function extractTitleAuthorComment(meiXML: string): { title: string, auth
   return {
     title,
     author,
-    comment
+    comment,
   };
 }
 

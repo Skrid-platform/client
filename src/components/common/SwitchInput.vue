@@ -1,18 +1,17 @@
 <template>
   <div class="wrapper">
-    <label class="label" :class="{ 'selected': props.pianoSelected }"> Piano </label>
+    <label class="label" :class="{ selected: props.pianoSelected }"> Piano </label>
 
     <label class="switch">
       <input type="checkbox" @change="emit('toggle')" />
       <span class="slider round"></span>
     </label>
 
-    <label class="label" :class="{ 'selected': !props.pianoSelected }"> Microphone </label>
+    <label class="label" :class="{ selected: !props.pianoSelected }"> Microphone </label>
   </div>
 </template>
 
 <script setup>
-
 defineOptions({
   name: 'SwitchInput',
 });

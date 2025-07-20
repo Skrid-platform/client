@@ -1,6 +1,5 @@
 <template>
   <div class="paginated-results">
-
     <!-- Navigation controls -->
     <div class="navigation">
       <!-- TO DO: add button to download results as CSV -->
@@ -177,7 +176,7 @@ function LoadPageN() {
     }
 
     fetchMeiFileByFileName(fileName, authors.selectedAuthorName).then((meiXML) => {
-      // extract title, autho and comment from the mei 
+      // extract title, author and comment from the mei
       // and memorize them to display it on result if needed
       let { title, author, comment } = extractTitleAuthorComment(meiXML);
       item['title'] = title;

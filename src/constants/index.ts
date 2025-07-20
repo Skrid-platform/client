@@ -65,22 +65,24 @@ export const qwerty_us_to_azerty: Record<string, string> = {
 };
 
 /*
-* This constant contains the information texts for the search parameters.
-* Each key corresponds to the HTML id of the search parameter, and the value is the text
-* that will be displayed in the tooltip when the user hovers over the parameter.
-*/
-export const info_texts: Record<string, string> = { // html_id: 'info text'
-        'pitch-lb': "Permet de prendre en compte / ignorer la hauteur des notes.",
-        'rhythm-lb': "Permet de prendre en compte / ignorer le rythme (la durée) des notes.",
-        'transpose-lb': "Permet d'obtenir les partitions dont la hauteur des notes de la mélodie est décalée.",
-        'homothety-lb': "Permet d'obtenir les partitions dont le tempo global de la mélodie a changé.",
-        'incipit-lb': "Permet de restreindre la recherche aux incipits.",
-        //'contour-lb': "Garde seulement le signe des intervalles entres les notes (haut, bas, égal).",
-        'pitch-dist-lb': "Permet d'augmenter la tolérance sur la hauteur de note (en tons), ou sur les intervalles (si transposition est coché).",
-        'duration-dist-lb': "Permet d'augmenter la tolérance sur la durée des notes (coefficient multiplicateur).",
-        'sequencing-dist-lb': "Permet de sauter des notes (en durée : 1 pour pleine, 0.5 pour ronde, 0.25 pour croche, ...).",
-        'alpha-lb': "Permet de filtrer les résultats en retirant tous ceux qui ont un score inférieur à alpha.",
-        //'stricte': "Permet une recherche sans tolérances.",
-        //'modereeMelo': "Permet la recherche avec une tolérance sur la hauteur des notes.",
-        //'modereeRythm': "Permet une recherche plus large avec des sauts de figures de notes."
-    };
+ * This constant contains the information texts for the search parameters.
+ * Each key corresponds to the HTML id of the search parameter, and the value is the text
+ * that will be displayed in the tooltip when the user hovers over the parameter.
+ */
+export const info_texts: Record<string, string> = {
+  // html_id: 'info text'
+  'pitch-lb': 'Permet de prendre en compte / ignorer la hauteur des notes.',
+  'rhythm-lb': 'Permet de prendre en compte / ignorer le rythme (la durée) des notes.',
+  'transpose-lb': "Permet d'obtenir les partitions dont la hauteur des notes de la mélodie est décalée.",
+  'homothety-lb': "Permet d'obtenir les partitions dont le tempo global de la mélodie a changé.",
+  'incipit-lb': 'Permet de restreindre la recherche aux incipits.',
+  //'contour-lb': "Garde seulement le signe des intervalles entres les notes (haut, bas, égal).",
+  'pitch-dist-lb':
+    "Permet d'augmenter la tolérance sur la hauteur de note (en tons), ou sur les intervalles (si transposition est coché).",
+  'duration-dist-lb': "Permet d'augmenter la tolérance sur la durée des notes (coefficient multiplicateur).",
+  'sequencing-dist-lb': 'Permet de sauter des notes (en durée : 1 pour pleine, 0.5 pour ronde, 0.25 pour croche, ...).',
+  'alpha-lb': 'Permet de filtrer les résultats en retirant tous ceux qui ont un score inférieur à alpha.',
+  //'stricte': "Permet une recherche sans tolérances.",
+  //'modereeMelo': "Permet la recherche avec une tolérance sur la hauteur des notes.",
+  //'modereeRythm': "Permet une recherche plus large avec des sauts de figures de notes."
+};
